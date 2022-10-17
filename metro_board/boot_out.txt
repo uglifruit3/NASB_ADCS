@@ -1,0 +1,2 @@
+Adafruit CircuitPython 7.3.3 on 2022-08-29; Adafruit Metro M4 Airlift Lite with samd51j19
+Board ID:metro_m4_airlift_lite
