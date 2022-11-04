@@ -1,9 +1,9 @@
 import board
 import busio
-import time
+from time import sleep
 import adafruit_bno055
-import sys
-import digitalio
+from sys import exit
+from digitalio import DigitalInOut, Direction, Pull
 
 # default location of IMU calibration offsets
 IMU_CALIBRATION_PROFILE = "imu_profile.txt" 
@@ -53,7 +53,7 @@ class Inertial_Measurement_Unit(adafruit_bno055.BNO055_I2C):
 
         profile_obj.close()
 
-    def calibrate(self, profile=IMU_CALIBRATION_PROFILE):
+    def calibrate(self, profile=IMU_CALIBRATION_PROFILE, auto_calibrate=True):
         if self.calibrated is True:
             print("IMU: DEBUG: IMU calibrated.")
         else:
@@ -78,7 +78,7 @@ class Inertial_Measurement_Unit(adafruit_bno055.BNO055_I2C):
                     print("\r   ", end="")
                     for i in range(0,4):
                         print(things[i] + ": " + str(cal[i]) + "   ", end="")
-                time.sleep(0.2)
+                sleep(0.2)
             print("")
 
         # TODO work out a means to write the profile
@@ -94,14 +94,6 @@ class Inertial_Measurement_Unit(adafruit_bno055.BNO055_I2C):
     def hware_reset(self):
         # uncomment below when ready to use
         # self.reset.value = False
-        # time.sleep(0.05)
+        # sleep(0.05)
         # self.reset.value = True
         print("IMU: DEBUG: Performed hardware reset.")
-
-def addr_scan(i2c):
-    if i2c.try_lock() == True:
-        addrs = i2c.scan()
-        i2c.unlock()
-        return addrs
-    else:
-        return []
