@@ -2,6 +2,7 @@ import board
 from busio import I2C
 from  gc import mem_free
 import adafruit_bno055
+from time import sleep
 
 import testing
 import imu
@@ -13,16 +14,16 @@ PRINT_MODE = 1
 #  1 -> fancy output with carriage returns (for readability)
 
 def main():
-    print("SYS: DEBUG: " + str(mem_free()) + " bytes free post-load")
-    fs_write = testing.init_writemode(board.D7)
-    testing.chk_fs_waccess(fs_write)
+    print("SYS: DEBUG: " + str(mem_free()) + " bytes free post-load.")
+    write_pin = testing.init_dig_input(board.D7)
+    testing.chk_fs_waccess(write_pin)
 
     testing.disp_I2C_scan(I2C)
 
     IMU = imu.Inertial_Measurement_Unit(I2C)
     IMU.check_init(I2C)
 
-    #IMU.calibrate()
+    IMU.calibrate()
 
     if PRINT_MODE == 1:
         print("")
@@ -49,4 +50,13 @@ def main():
 # =================== #
 #       MAIN          #
 # =================== #
+# delay in sec
+boot_delay = 10
+print("")
+while boot_delay >= 0:
+    print("\rSYS: ANCMT: Start delay: {t:1.0f} seconds remain.".format(t=boot_delay), end="")
+    boot_delay -= 1
+    sleep(1)
+print("")
+
 main()

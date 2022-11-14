@@ -1,6 +1,8 @@
 import board
 from digitalio import DigitalInOut, Direction, Pull
 from math import atan2, asin, pow
+from time import sleep
+from storage import remount
 
 def addr_scan(i2c):
     if i2c.try_lock() == True:
@@ -29,15 +31,15 @@ def quat_to_euler(q0, q1, q2, q3):
 
     return e
 
-def init_writemode(write_pin=0):
-    if write_pin == 0:
+def init_dig_input(pin=0):
+    if pin == 0:
         return 0
 
-    write = DigitalInOut(write_pin)
-    write.direction = Direction.INPUT
-    write.pull = Pull.UP
+    out = DigitalInOut(pin)
+    out.direction = Direction.INPUT
+    out.pull = Pull.DOWN
 
-    return write
+    return out
 
 def chk_fs_waccess(write_pin):
     if write_pin == 0 or write_pin.value is False:
@@ -46,3 +48,10 @@ def chk_fs_waccess(write_pin):
     else:
         print("SYS: DEBUG: Filesystem writeable.")
         return True
+
+def boot_sequence():
+    w_access_pin = board.D7
+    write_pin = init_dig_input(board.D7)
+
+    if chk_fs_waccess(write_pin) is True:
+        remount("/", False)

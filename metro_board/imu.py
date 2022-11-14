@@ -82,6 +82,8 @@ class Inertial_Measurement_Unit(adafruit_bno055.BNO055_I2C):
             print("")
 
         # TODO work out a means to write the profile
+        self.read_IMU_offsets()
+        self.write_profile_offsets()
 
     def check_init(self, i2c):
         if type(self) is not type(Inertial_Measurement_Unit(i2c)):
