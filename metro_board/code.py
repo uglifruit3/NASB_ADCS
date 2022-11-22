@@ -51,7 +51,7 @@ def main():
 #       MAIN          #
 # =================== #
 # delay in sec
-boot_delay = 10
+boot_delay = 1
 print("")
 while boot_delay >= 0:
     print("\rSYS: ANCMT: Start delay: {t:1.0f} seconds remain.".format(t=boot_delay), end="")
