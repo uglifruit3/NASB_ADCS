@@ -46,12 +46,6 @@ class Inertial_Measurement_Unit(adafruit_bno055.BNO055_I2C):
             tmp = list(self.calibration_status)
         except OSError:
             print("IMU: ERROR: Bad read on calibration register(s).")
-            if self.reset_T == 0:
-                sys.exit()
-            else:
-                print("IMU: WARNS: Hardware reset initiated by calibration.")
-                self.hware_reset()
-                return
         else:
             self.cal_stats_T["sys"]   = tmp[0] 
             self.cal_stats_T["gyro"]  = tmp[1] 
@@ -74,13 +68,22 @@ class Inertial_Measurement_Unit(adafruit_bno055.BNO055_I2C):
         self.mag_offsets_T = list(self.offsets_magnetometer)
 
     def read_profile_offsets(self, profile=IMU_CALIBRATION_PROFILE):
-        #with open(profile, "r") as infile:
-        # TODO need to fully fill
-        return False
-            
+        with open(profile, "r") as infile:
+            tmp = infile.readline()
+            self.gyr_offsets_T = tmp.split(" ")
+            tmp = infile.readline()
+            self.acc_offsets_T = tmp.split(" ")
+            tmp = infile.readline()
+            self.mag_offsets_T = tmp.split(" ")
+            print("IMU: DEBUG: Read calibration offsets from file {s:s}. Mode is {e}.".format(s=profile, e=self.calibration_mode_T))
+            return False
+        print("IMU: ERROR: Could not open calibration profile {s:s}.".format(s=profile))
+        return True
 
     def write_IMU_offsets(self):
-        pass
+        self.offsets_gyroscope     = tuple(self.gyr_offsets_T)
+        self.offsets_accelerometer = tuple(self.acc_offsets_T)
+        self.offsets_magnetometer  = tuple(self.mag_offsets_T)
 
     def write_profile_offsets(self, profile=IMU_CALIBRATION_PROFILE):
         try: 
@@ -99,16 +102,10 @@ class Inertial_Measurement_Unit(adafruit_bno055.BNO055_I2C):
         if self.is_calibrated() is True:
             print("IMU: ANCMT: IMU calibrated.")
         else:
-            print("IMU: ANCMT: IMU not calibrated.")
-            
             if auto_cal is True:
                 err = self.read_profile_offsets(profile=profile)
                 if err is False:
-                    print("IMU: DEBUG: Read calibration offsets from file {s:s}. Mode is {e}.".format(s=profile, e=self.calibration_mode_T))
                     self.write_IMU_offsets()
-                else:
-                    print("IMU: ANCMT: IMU not calibrated.")
-                    return
 
                 self.fetch_calibration_status()
                 for sensor in self.cal_stats_T:
@@ -141,8 +138,7 @@ class Inertial_Measurement_Unit(adafruit_bno055.BNO055_I2C):
             return 0
 
     def hware_reset(self):
-        # uncomment below when ready to use
-        # self.reset_T.value = False
-        # sleep(0.05)
-        # self.reset_T.value = True
+        self.reset_T.value = False
+        sleep(0.05)
+        self.reset_T.value = True
         print("IMU: DEBUG: Performed hardware reset.")
