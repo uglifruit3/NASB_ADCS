@@ -95,6 +95,7 @@ Below is a complete list of valid commands that can be issued to the ADCS.
 	* Returns: the controller's temperature in degrees Celcius.
 * DOWNLINK SENSOR DATA: sends the result of a sensor command to the Payload Interface Board for downlink.
 	* Arguments: the sensor command to be downlinked (any of the sensor commands beginning with QUERY may be selected).
+	* Returns: none.
 
 ### Actuator commands
 * MOMENTUM WHEEL RESET: resets the CubeADCS momentum wheel and brings the wheel to spin-up RPM.
@@ -125,45 +126,46 @@ Note that typically, commands can be issued concurrently. For example, one can c
 
 ## Table of Command Priorities and Statuses
 
-Command                       | Index | Task Precedence | Development Priority | Completion Level 
-------------------------------|-------|-----------------|----------------------|------------------
-SYSTEM RESET                  | 001   | 1               | 1                    | 0
-IMU RESET                     | 002   | 1               | 1                    | 0
-QUERY SOH                     | 003   | 2               | 1                    | 0
-ENTER SH MODE                 | 004   | 1               | 1                    | 0
-EXIT SH MODE                  | 005   | 1               | 1                    | 0
-QUERY MODE                    | 006   | 3               | 2                    | 0
-QUERY FREE MEMORY             | 007   | 3               | 3                    | 0
-QUERY FREE FILESYSTEM STORAGE | 008   | 3               | 4                    | 0
-QUERY FILESYSTEM CONTENTS     | 009   | 3               | 4                    | 0
-DELETE FILE                   | 010   | 4               | 4                    | 0
-DOWNLINK FILE CONTENTS        | 011   | 2               | 4                    | 0
-QUERY UPTIME                  | 012   | 3               | 5                    | 0
-QUERY SYSTEM TIME             | 013   | 3               | 5                    | 0
-SET SYSTEM TIME               | 014   | 2               | 5                    | 0
-QUERY TASKLIST                | 101   | 3               | 2                    | 0
-SCHEDULE TASK                 | 102   | 2               | 2                    | 0
-END TASK                      | 103   | 2               | 2                    | 0
-QUERY LOGS                    | 104   | 4               | 5                    | 0
-LOG                           | 105   | 4               | 5                    | 0
-END LOG                       | 106   | 4               | 5                    | 0
-QUERY MAGNETIC FIELD DATA     | 201   | 2               | 1                    | 0
-QUERY SUN SENSOR DATA         | 202   | 2               | 1                    | 0
-QUERY RATE DATA               | 203   | 2               | 1                    | 0
-QUERY ATTITUDE                | 204   | 2               | 1                    | 0
-QUERY SYSTEM TEMPERATURE      | 205   | 2               | 1                    | 0
-DOWNLINK SENSOR DATA          | 206   | 2               | 2                    | 0
-MOMENTUM WHEEL RESET          | 301   | 1               | 3                    | 0
-QUERY MOMENTUM WHEEL SPEED    | 302   | 2               | 3                    | 0
-MAGNETIC DEVICE RESET         | 303   | 1               | 3                    | 0
-QUERY MAGNETIC DEVICE POWER   | 304   | 2               | 3                    | 0
-DETUMBLE                      | 401   | 1               | 1                    | 0
-ORIENT TO NADIR               | 402   | 1               | 1                    | 0
-TERMINATE ATTITUDE COMMAND    | 403   | 1               | 1                    | 0
+Command                       | Index | Arguments            | Returns       | Task Precedence | Development Priority | Completion Level 
+------------------------------|-------|----------------------|---------------|-----------------|----------------------|-------------------
+SYSTEM RESET                  | 001   | none                 | none          | 1               | 1                    | 0
+IMU RESET                     | 002   | none                 | none          | 1               | 1                    | 0
+QUERY SOH                     | 003   | 1 int                | 1 int         | 2               | 1                    | 0
+ENTER SH MODE                 | 004   | 1 float              | 1 int         | 1               | 1                    | 0
+EXIT SH MODE                  | 005   | 1 int                | 1 int         | 1               | 1                    | 0
+QUERY MODE                    | 006   | none                 | 1 int         | 3               | 2                    | 0
+QUERY FREE MEMORY             | 007   | none                 | 1 int         | 3               | 3                    | 0
+QUERY FREE FILESYSTEM STORAGE | 008   | none                 | 1 int         | 3               | 4                    | 0
+QUERY FILESYSTEM CONTENTS     | 009   | 1 string             | 1 string      | 3               | 4                    | 0
+DELETE FILE                   | 010   | 1 string             | 1 int         | 4               | 4                    | 0
+DOWNLINK FILE CONTENTS        | 011   | 1 string             | none          | 2               | 4                    | 0
+QUERY UPTIME                  | 012   | none                 | 1 int         | 3               | 5                    | 0
+QUERY SYSTEM TIME             | 013   | none                 | 1 string      | 3               | 5                    | 0
+SET SYSTEM TIME               | 014   | 2 int                | 1 int         | 2               | 5                    | 0
+QUERY TASKLIST                | 101   | 1 int                | 1 string      | 3               | 2                    | 0
+SCHEDULE TASK                 | 102   | 1 int, 2 float       | none          | 2               | 2                    | 0
+END TASK                      | 103   | 1 int                | none          | 2               | 2                    | 0
+QUERY LOGS                    | 104   | none                 | 1 string      | 4               | 5                    | 0
+LOG                           | 105   | 1 int, 2 float, 1 str| none          | 4               | 5                    | 0
+END LOG                       | 106   | 1 int                | none          | 4               | 5                    | 0
+QUERY MAGNETIC FIELD DATA     | 201   | none                 | 3 float       | 2               | 1                    | 0
+QUERY SUN SENSOR DATA         | 202   | none                 | n float       | 2               | 1                    | 0
+QUERY RATE DATA               | 203   | none                 | 3 float       | 2               | 1                    | 0
+QUERY ATTITUDE                | 204   | 1 int                | 3 or 4 float  | 2               | 1                    | 0
+QUERY SYSTEM TEMPERATURE      | 205   | none                 | 1 float       | 2               | 1                    | 0
+DOWNLINK SENSOR DATA          | 206   | 1 int                | none          | 2               | 2                    | 0
+MOMENTUM WHEEL RESET          | 301   | none                 | none          | 1               | 3                    | 0
+QUERY MOMENTUM WHEEL SPEED    | 302   | none                 | 1 float       | 2               | 3                    | 0
+MAGNETIC DEVICE RESET         | 303   | none                 | none          | 1               | 3                    | 0
+QUERY MAGNETIC DEVICE POWER   | 304   | none                 | 3 float       | 2               | 3                    | 0
+DETUMBLE                      | 401   | 1 or 2 float, 1 int  | none          | 1               | 1                    | 0
+ORIENT TO NADIR               | 402   | 2 or 3 float, 1 int  | none          | 1               | 1                    | 0
+TERMINATE ATTITUDE COMMAND    | 403   | none                 | 1 int         | 1               | 1                    | 0
 
 Notes:
-* In the system task queue, task priority will be arbitrated by the task precedence value assorted with each assigned task.
-* Completion level is measured on a scale from 0 to 3. 
+1. Development priority is rated 1 (highest) to 5 (lowest).
+2. In the system task queue, task priority will be arbitrated by the task precedence value assorted with each assigned task (1 highest).
+3. Completion level is measured on a scale from 0 to 3. 
 	* 0: not started.
 	* 1: in development.
 	* 2: in testing.
