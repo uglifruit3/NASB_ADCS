@@ -58,6 +58,18 @@ Below is a complete list of valid commands that can be issued to the ADCS.
 	* Returns: notification of success or failure.
 
 ### Tasking and logging commands
+* QUERY SYSTEM LOG: lists the contents of the system log.
+	* Arguments: log level (a number corresponding to the highest level of log item to be listed).
+	* Returns: a list of system log items.
+* SAVE SYSTEM LOG: saves the current contents of the system log to the destination file.
+	* Arguments: the destination file name, log level (a number corresponding to the highest level of log item to be saved).
+	* Returns: notification of success or failure.
+* CLEAR SYSTEM LOG: erases the current contents of the system log.
+	* Arguments: save flag (set to auto-save log contents before erasure), the destination file name, log level.
+	* Returns: none.
+* SET MAX LOG ENTRIES: sets the maximum number of system log entries before the system log is automatically cleared.
+	* Arguments: max log entries.
+	* Returns: none.
 * QUERY TASKLIST: lists the contents of the system task queue.
 	* Arguments: maximum priority level (a number corresponding to the highest priority category of tasks to be listed).
 	* Returns: a list of tasks in the system task queue.
@@ -67,32 +79,41 @@ Below is a complete list of valid commands that can be issued to the ADCS.
 * END TASK: terminates a specified task by deleting it from the system task queue.
 	* Arguments: the task to be terminated.
 	* Returns: none.
-* QUERY LOGS: queries the active logging commands.
+* QUERY RECORD: queries the active recording commands.
 	* Arguments: none.
-	* Returns: a list of active log commands.
-* LOG: recurringly logs the output of a command to a specified file destination.
-	* Arguments: command to be logged (any command beginning with QUERY may be selected), destination file name, maximum log entries, recurrence interval (time in seconds between recurring executions; passed as 0 for no recurrence), delay until start (time in seconds to delay the task's first execution by). 
+	* Returns: a list of active recording commands.
+* RECORD: recurringly records the output of a command to a specified file destination.
+	* Arguments: command to be recorded (any command beginning with QUERY may be selected), destination file name, maximum log entries, recurrence interval (time in seconds between recurring executions; passed as 0 for no recurrence), delay until start (time in seconds to delay the task's first execution by). 
 	* Returns: none.
-* END LOG: terminates the specified log.
-	* Arguments: the log to be terminated.
+* END RECORD: terminates the specified recording command.
+	* Arguments: the record to be terminated.
 	* Returns: none.
 
 ### Sensor commands
 * QUERY MAGNETIC FIELD DATA: obtains magnetic field information from the ADCS.
 	* Arguments: none.
 	* Returns: the magnetometer measurements of the magnetic field strength about each spacecraft axis (3 values).
-* QUERY SUN SENSOR DATA: obtains sun sensor readings from the ADCS.
-	* Arguments: none.
-	* Returns: the readings from each coarse sun sensor attached to the spacecraft (n values).
 * QUERY RATE DATA: obtains attitude rate data from the ADCS.
 	* Arguments: none.
 	* Returns: the gyroscope measurements of the attitude rate about each spacecraft axis (3 values).
+* QUERY SUN SENSOR DATA: obtains sun sensor readings from the ADCS.
+	* Arguments: none.
+	* Returns: the readings from each coarse sun sensor attached to the spacecraft (n values).
 * QUERY ATTITUDE: obtains synthesized spacecraft attitude information from ADCS.
 	* Arguments: coordinate system (LVLH, ECI), representation (quaternion, euler angle).
 	* Returns: a representation of the satellite's attitude (3 (euler angle) or 4 (quaternion) values).
 * QUERY SYSTEM TEMPERATURE: obtains controller temperature in degrees Celcius.
 	* Arguments: none.
 	* Returns: the controller's temperature in degrees Celcius.
+* CALIBRATE GYROSCOPE: initiates an ongoing attempt to calibrate the BNO055's onboard gyroscope.
+	* Arguments: none.
+	* Returns: none.
+* CALIBRATE MAGNETOMETER: initiates an ongoing attempt to calibrate the BNO055's onboard magentometer.
+	* Arguments: none.
+	* Returns: none.
+* CALIBRATE SENSOR SYSTEM: initiates an ongoing attempt to calibrate the BNO055 system.
+	* Arguments: none.
+	* Returns: none.
 * DOWNLINK SENSOR DATA: sends the result of a sensor command to the Payload Interface Board for downlink.
 	* Arguments: the sensor command to be downlinked (any of the sensor commands beginning with QUERY may be selected).
 	* Returns: none.
@@ -142,18 +163,25 @@ DOWNLINK FILE CONTENTS        | 011   | 1 string             | none          | 2
 QUERY UPTIME                  | 012   | none                 | 1 int         | 3               | 5                    | 0
 QUERY SYSTEM TIME             | 013   | none                 | 1 string      | 3               | 5                    | 0
 SET SYSTEM TIME               | 014   | 2 int                | 1 int         | 2               | 5                    | 0
-QUERY TASKLIST                | 101   | 1 int                | 1 string      | 3               | 2                    | 0
-SCHEDULE TASK                 | 102   | 1 int, 2 float       | none          | 2               | 2                    | 0
-END TASK                      | 103   | 1 int                | none          | 2               | 2                    | 0
-QUERY LOGS                    | 104   | none                 | 1 string      | 4               | 5                    | 0
-LOG                           | 105   | 1 int, 2 float, 1 str| none          | 4               | 5                    | 0
-END LOG                       | 106   | 1 int                | none          | 4               | 5                    | 0
+QUERY SYSTEM LOG              | 101   | 1 int                | 1 string      | 4               | 2                    | 0
+SAVE SYSTEM LOG               | 102   | 1 string, 1 int      | 1 int         | 4               | 2                    | 0
+CLEAR SYSTEM LOG              | 103   | 1 string, 2 int      | none          | 3               | 2                    | 0
+SET MAX LOG ENTRIES           | 104   | 1 int                | none          | 4               | 2                    | 0
+QUERY TASKLIST                | 105   | 1 int                | 1 string      | 3               | 2                    | 0
+SCHEDULE TASK                 | 106   | 1 int, 2 float       | none          | 2               | 2                    | 0
+END TASK                      | 107   | 1 int                | none          | 2               | 2                    | 0
+QUERY RECORDS                 | 108   | none                 | 1 string      | 4               | 5                    | 0
+RECORD                        | 109   | 1 int, 2 float, 1 str| none          | 4               | 5                    | 0
+END RECORD                    | 110   | 1 int                | none          | 4               | 5                    | 0
 QUERY MAGNETIC FIELD DATA     | 201   | none                 | 3 float       | 2               | 1                    | 0
-QUERY SUN SENSOR DATA         | 202   | none                 | n float       | 2               | 1                    | 0
-QUERY RATE DATA               | 203   | none                 | 3 float       | 2               | 1                    | 0
+QUERY RATE DATA               | 202   | none                 | 3 float       | 2               | 1                    | 0
+QUERY SUN SENSOR DATA         | 203   | none                 | n float       | 2               | 1                    | 0
 QUERY ATTITUDE                | 204   | 1 int                | 3 or 4 float  | 2               | 1                    | 0
 QUERY SYSTEM TEMPERATURE      | 205   | none                 | 1 float       | 2               | 1                    | 0
-DOWNLINK SENSOR DATA          | 206   | 1 int                | none          | 2               | 2                    | 0
+CALIBRATE GYROSCOPE           | 206   | none                 | 1 int         | 4               | 2                    | 0
+CALIBRATE MAGNETOMETER        | 207   | none                 | 1 int         | 4               | 2                    | 0
+CALIBRATE SENSOR SYSTEM       | 208   | none                 | 1 int         | 4               | 2                    | 0
+DOWNLINK SENSOR DATA          | 209   | 1 int                | none          | 2               | 2                    | 0
 MOMENTUM WHEEL RESET          | 301   | none                 | none          | 1               | 3                    | 0
 QUERY MOMENTUM WHEEL SPEED    | 302   | none                 | 1 float       | 2               | 3                    | 0
 MAGNETIC DEVICE RESET         | 303   | none                 | none          | 1               | 3                    | 0
@@ -170,3 +198,17 @@ Notes:
 	* 1: in development.
 	* 2: in testing.
 	* 3: completed.
+4. String arguments will be limited to no greater than 31 characters (plus null terminator)
+
+## Development Roadmap
+The ADCS continuously run a "master process" which is responsible for arbitrating between other lesser processes, communicating with outside hardware, and monitoring the system for abnormalities or pre-defined conditions. 
+
+The system will call routines implemented in the following library files:
+* ADCS_MASTER_ROUTINE - contains the functions and bindings for running the master process.
+* ADCS_PLD_INTERFACE - contains the functions and bindings for communicating with the NASB payload interface device.
+* ADCS_COMMANDS_0 - contains the supporting functions and classes for executing commands with indices 0XX.
+* ADCS_COMMANDS_1 - contains the supporting functions and classes for executing commands with indices 1XX.
+* ADCS_COMMANDS_2 - contains the supporting functions and classes for executing commands with indices 2XX.
+* ADCS_COMMANDS_3 - contains the supporting functions and classes for executing commands with indices 3XX.
+* ADCS_COMMANDS_4 - contains the supporting functions and classes for executing commands with indices 4XX.
+* ADCS_MATH - contains functions for performing high-speed computations in support of ADCS_COMMANDS_4. This library will likely be written in C or C++, then compiled to a Python library.
