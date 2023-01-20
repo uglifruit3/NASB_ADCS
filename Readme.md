@@ -45,7 +45,7 @@ Below is a complete list of valid commands that can be issued to the ADCS.
 	* Arguments: the file to be removed.
 	* Returns: whether file was successfully removed.
 * DOWNLINK FILE CONTENTS: sends the contents of the specified file to the Payload Interface Board for downlink.
-	* Arguments: the file to be transmitted.
+	* Arguments: the file to be transmitted, and the number of lines from the bottom of the file to be transmitted.
 	* Returns: none.
 * QUERY UPTIME: queries the system uptime.
 	* Arguments: none.
@@ -74,7 +74,7 @@ Below is a complete list of valid commands that can be issued to the ADCS.
 	* Arguments: maximum priority level (a number corresponding to the highest priority category of tasks to be listed).
 	* Returns: a list of tasks in the system task queue.
 * SCHEDULE TASK: adds a task to the system task queue.
-	* Arguments: command to be executed (any command other than SCHEDULE TASK can be selected), recurrence interval (time in seconds between recurring executions; passed as 0 for no recurrence), delay until start (time in seconds to delay the task's first execution by).
+	* Arguments: command to be executed (any command other than SCHEDULE TASK can be selected), recurrence interval (time in seconds between recurring executions; passed as 0 for no recurrence), delay until start (time in seconds to delay the task's first execution by), all properly formatted arguments to the command being executed.
 	* Returns: none.
 * END TASK: terminates a specified task by deleting it from the system task queue.
 	* Arguments: the task to be terminated.
@@ -159,7 +159,7 @@ QUERY FREE MEMORY             | 007   | none                 | 1 int         | 3
 QUERY FREE FILESYSTEM STORAGE | 008   | none                 | 1 int         | 3               | 4                    | 0
 QUERY FILESYSTEM CONTENTS     | 009   | 1 string             | 1 string      | 3               | 4                    | 0
 DELETE FILE                   | 010   | 1 string             | 1 int         | 4               | 4                    | 0
-DOWNLINK FILE CONTENTS        | 011   | 1 string             | none          | 2               | 4                    | 0
+DOWNLINK FILE CONTENTS        | 011   | 1 string, 1 int      | none          | 2               | 4                    | 0
 QUERY UPTIME                  | 012   | none                 | 1 int         | 3               | 5                    | 0
 QUERY SYSTEM TIME             | 013   | none                 | 1 string      | 3               | 5                    | 0
 SET SYSTEM TIME               | 014   | 2 int                | 1 int         | 2               | 5                    | 0
@@ -168,7 +168,7 @@ SAVE SYSTEM LOG               | 102   | 1 string, 1 int      | 1 int         | 4
 CLEAR SYSTEM LOG              | 103   | 1 string, 2 int      | none          | 3               | 2                    | 0
 SET MAX LOG ENTRIES           | 104   | 1 int                | none          | 4               | 2                    | 0
 QUERY TASKLIST                | 105   | 1 int                | 1 string      | 3               | 2                    | 0
-SCHEDULE TASK                 | 106   | 1 int, 2 float       | none          | 2               | 2                    | 0
+SCHEDULE TASK                 | 106   | 1 int, 2 float, args | none          | 2               | 2                    | 0
 END TASK                      | 107   | 1 int                | none          | 2               | 2                    | 0
 QUERY RECORDS                 | 108   | none                 | 1 string      | 4               | 5                    | 0
 RECORD                        | 109   | 1 int, 2 float, 1 str| none          | 4               | 5                    | 0
@@ -201,14 +201,33 @@ Notes:
 4. String arguments will be limited to no greater than 31 characters (plus null terminator)
 
 ## Development Roadmap
+### Architecture and organization
 The ADCS continuously run a "master process" which is responsible for arbitrating between other lesser processes, communicating with outside hardware, and monitoring the system for abnormalities or pre-defined conditions. 
 
 The system will call routines implemented in the following library files:
-* ADCS_MASTER_ROUTINE - contains the functions and bindings for running the master process.
-* ADCS_PLD_INTERFACE - contains the functions and bindings for communicating with the NASB payload interface device.
-* ADCS_COMMANDS_0 - contains the supporting functions and classes for executing commands with indices 0XX.
-* ADCS_COMMANDS_1 - contains the supporting functions and classes for executing commands with indices 1XX.
-* ADCS_COMMANDS_2 - contains the supporting functions and classes for executing commands with indices 2XX.
-* ADCS_COMMANDS_3 - contains the supporting functions and classes for executing commands with indices 3XX.
-* ADCS_COMMANDS_4 - contains the supporting functions and classes for executing commands with indices 4XX.
-* ADCS_MATH - contains functions for performing high-speed computations in support of ADCS_COMMANDS_4. This library will likely be written in C or C++, then compiled to a Python library.
+* MASTER_PROCESS - contains the functions and bindings for running the master process.
+* PLD_INTERFACE - contains the functions and bindings for communicating with the NASB payload interface device.
+* CMDS_0 - contains the supporting functions and classes for executing commands with indices 0XX.
+* CMDS_1 - contains the supporting functions and classes for executing commands with indices 1XX.
+* CMDS_2 - contains the supporting functions and classes for executing commands with indices 2XX.
+* CMDS_3 - contains the supporting functions and classes for executing commands with indices 3XX.
+* CMDS_4 - contains the supporting functions and classes for executing commands with indices 4XX.
+* CMDS_4_MATH - contains functions for performing high-speed computations in support of ADCS_COMMANDS_4. This library will likely be written in C or C++, then compiled to a Python library.
+
+MASTER_PROCESS will be prototyped before any CMDS_*N* libraries can be constructed. The progress on these is as follows:
+
+MASTER PROCESS | PLD_INTERFACE | CMDS_0 | CMDS_1 | CMDS_2 | CMDS_3 | CMDS_4 | CMDS_4_MATH 
+---------------|---------------|--------|--------|--------|--------|--------|-------------
+indev          | -             | -      | -      | -      | -      | -      | -
+
+The following non-executable files will be standard on the system:
+* STARTUP.txt - contains the default state the system will inherit when powered on.
+* LOG.txt - contains the system log.
+* *N_cal_profile.txt* - where *N* is an integer, 0-9. These files contain previously saved calibration profiles for the BNO055.
+* *N_record.txt* - where *N* is an integer, 0-9. These files contain saved records as requested by the user or system.
+
+### Testing
+Each command will be tested using an ordered sequence:
+* Debugging and simulation--the command will be validated for programming correctness and tested against using simulated inputs with known, expected outcomes.
+* Hardware mockup--the command will be run connected to all relevant hardware and validated for correct behavior.
+* Full scale testing--the command will be run with hardware and software fully integrated and validated for correct behavior.

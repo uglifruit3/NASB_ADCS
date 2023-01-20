@@ -7,6 +7,10 @@ code: $(DIR)/code.py
 	# sync is necessary to fully flush buffer to device
 	sudo sync
 
+text:
+	for file in $(shell cd $(DIR) && ls *.txt); do sudo cat $(DIR)/$$file | sudo tee $(MOUNTPOINT)/$$file >/dev/null; done
+	sudo sync
+
 lib: $(DIR)/lib/
 	sudo rm -r $(MOUNTPOINT)/lib
 	sudo cp -r $(DIR)/lib $(MOUNTPOINT)/
