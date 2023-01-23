@@ -220,6 +220,8 @@ MASTER PROCESS | PLD_INTERFACE | CMDS_0 | CMDS_1 | CMDS_2 | CMDS_3 | CMDS_4 | CM
 ---------------|---------------|--------|--------|--------|--------|--------|-------------
 indev          | -             | -      | -      | -      | -      | -      | -
 
+Supporting hardware driver libraries will be labeled as the device name in all capital letters.
+
 The following non-executable files will be standard on the system:
 * STARTUP.txt - contains the default state the system will inherit when powered on.
 * LOG.txt - contains the system log.
