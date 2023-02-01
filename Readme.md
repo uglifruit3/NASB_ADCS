@@ -150,19 +150,21 @@ Note that typically, commands can be issued concurrently. For example, one can c
 Command                       | Index | Arguments            | Returns       | Task Precedence | Development Priority | Completion Level 
 ------------------------------|-------|----------------------|---------------|-----------------|----------------------|-------------------
 SYSTEM RESET                  | 001   | none                 | none          | 1               | 1                    | 0
-IMU RESET                     | 002   | none                 | none          | 1               | 1                    | 0
-QUERY SOH                     | 003   | 1 int                | 1 int         | 2               | 1                    | 0
-ENTER SH MODE                 | 004   | 1 float              | 1 int         | 1               | 1                    | 0
-EXIT SH MODE                  | 005   | 1 int                | 1 int         | 1               | 1                    | 0
-QUERY MODE                    | 006   | none                 | 1 int         | 3               | 2                    | 0
-QUERY FREE MEMORY             | 007   | none                 | 1 int         | 3               | 3                    | 0
-QUERY FREE FILESYSTEM STORAGE | 008   | none                 | 1 int         | 3               | 4                    | 0
-QUERY FILESYSTEM CONTENTS     | 009   | 1 string             | 1 string      | 3               | 4                    | 0
-DELETE FILE                   | 010   | 1 string             | 1 int         | 4               | 4                    | 0
-DOWNLINK FILE CONTENTS        | 011   | 1 string, 1 int      | none          | 2               | 4                    | 0
-QUERY UPTIME                  | 012   | none                 | 1 int         | 3               | 5                    | 0
-QUERY SYSTEM TIME             | 013   | none                 | 1 string      | 3               | 5                    | 0
-SET SYSTEM TIME               | 014   | 2 int                | 1 int         | 2               | 5                    | 0
+IMU RESET                     | 002   | none                 | none          | 1               | 3                    | 1
+IMU SUSPEND                   | 003   | none                 | none          | 2               | 1                    | 1
+IMU UN-SUSPEND                | 004   | none                 | none          | 2               | 1                    | 1
+QUERY SOH                     | 005   | 1 int                | 1 int         | 2               | 1                    | 0
+ENTER SH MODE                 | 006   | 1 float              | 1 int         | 1               | 1                    | 0
+EXIT SH MODE                  | 007   | 1 int                | 1 int         | 1               | 1                    | 0
+QUERY MODE                    | 008   | none                 | 1 int         | 3               | 2                    | 0
+QUERY FREE MEMORY             | 009   | none                 | 1 int         | 3               | 3                    | 0
+QUERY FREE FILESYSTEM STORAGE | 010   | none                 | 1 int         | 3               | 4                    | 0
+QUERY FILESYSTEM CONTENTS     | 011   | 1 string             | 1 string      | 3               | 4                    | 0
+DELETE FILE                   | 012   | 1 string             | 1 int         | 4               | 4                    | 0
+DOWNLINK FILE CONTENTS        | 013   | 1 string, 1 int      | none          | 2               | 4                    | 0
+QUERY UPTIME                  | 014   | none                 | 1 int         | 3               | 5                    | 0
+QUERY SYSTEM TIME             | 015   | none                 | 1 string      | 3               | 5                    | 0
+SET SYSTEM TIME               | 016   | 2 int                | 1 int         | 2               | 5                    | 0
 QUERY SYSTEM LOG              | 101   | 1 int                | 1 string      | 4               | 2                    | 0
 SAVE SYSTEM LOG               | 102   | 1 string, 1 int      | 1 int         | 4               | 2                    | 0
 CLEAR SYSTEM LOG              | 103   | 1 string, 2 int      | none          | 3               | 2                    | 0
@@ -173,14 +175,14 @@ END TASK                      | 107   | 1 int                | none          | 2
 QUERY RECORDS                 | 108   | none                 | 1 string      | 4               | 5                    | 0
 RECORD                        | 109   | 1 int, 2 float, 1 str| none          | 4               | 5                    | 0
 END RECORD                    | 110   | 1 int                | none          | 4               | 5                    | 0
-QUERY MAGNETIC FIELD DATA     | 201   | none                 | 3 float       | 2               | 1                    | 0
-QUERY RATE DATA               | 202   | none                 | 3 float       | 2               | 1                    | 0
+QUERY MAGNETIC FIELD DATA     | 201   | none                 | 3 float       | 2               | 1                    | 1
+QUERY RATE DATA               | 202   | none                 | 3 float       | 2               | 1                    | 1
 QUERY SUN SENSOR DATA         | 203   | none                 | n float       | 2               | 1                    | 0
 QUERY ATTITUDE                | 204   | 1 int                | 3 or 4 float  | 2               | 1                    | 0
-QUERY SYSTEM TEMPERATURE      | 205   | none                 | 1 float       | 2               | 1                    | 0
-CALIBRATE GYROSCOPE           | 206   | none                 | 1 int         | 4               | 2                    | 0
-CALIBRATE MAGNETOMETER        | 207   | none                 | 1 int         | 4               | 2                    | 0
-CALIBRATE SENSOR SYSTEM       | 208   | none                 | 1 int         | 4               | 2                    | 0
+QUERY SYSTEM TEMPERATURE      | 205   | none                 | 1 float       | 2               | 1                    | 1
+CALIBRATE GYROSCOPE           | 206   | none                 | 1 int         | 4               | 5                    | 1
+CALIBRATE MAGNETOMETER        | 207   | none                 | 1 int         | 4               | 5                    | 1
+CALIBRATE SENSOR SYSTEM       | 208   | none                 | 1 int         | 4               | 5                    | 1
 DOWNLINK SENSOR DATA          | 209   | 1 int                | none          | 2               | 2                    | 0
 MOMENTUM WHEEL RESET          | 301   | none                 | none          | 1               | 3                    | 0
 QUERY MOMENTUM WHEEL SPEED    | 302   | none                 | 1 float       | 2               | 3                    | 0
@@ -218,7 +220,7 @@ MASTER_PROCESS will be prototyped before any CMDS_*N* libraries can be construct
 
 MASTER PROCESS | PLD_INTERFACE | CMDS_0 | CMDS_1 | CMDS_2 | CMDS_3 | CMDS_4 | CMDS_4_MATH 
 ---------------|---------------|--------|--------|--------|--------|--------|-------------
-indev          | -             | -      | -      | -      | -      | -      | -
+indev          | -             | -      | -      | indev  | -      | -      | -
 
 Supporting hardware driver libraries will be labeled as the device name in all capital letters.
 
@@ -233,3 +235,11 @@ Each command will be tested using an ordered sequence:
 * Debugging and simulation--the command will be validated for programming correctness and tested against using simulated inputs with known, expected outcomes.
 * Hardware mockup--the command will be run connected to all relevant hardware and validated for correct behavior.
 * Full scale testing--the command will be run with hardware and software fully integrated and validated for correct behavior.
+
+### Naming schemes
+* Inheritance - types declared in a class which inherits from a pre-written class will contain a \_T suffix.
+* Global variables - global variables will consist of all capital letters.
+	* Variables corresponding to a communication protocol will contain the suffix P\_.
+	* Variables corresponding to a physical device will contain the suffix D\_.
+	* Variables corresponding to a file name will contain the suffix F\_.
+	* Variables corresponding to state will not contain any suffixes.

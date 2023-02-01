@@ -1,7 +1,6 @@
-system_mode testing
-output_mode terminal
+terminal_output true
 system_read_only true
 max_log_entries 250
 active_records 0
-startup_delay 3
+startup_delay 1
 log_level 3
