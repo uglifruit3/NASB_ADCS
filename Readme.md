@@ -150,14 +150,14 @@ Note that typically, commands can be issued concurrently. For example, one can c
 Command                       | Index | Arguments            | Returns       | Task Precedence | Development Priority | Completion Level 
 ------------------------------|-------|----------------------|---------------|-----------------|----------------------|-------------------
 SYSTEM RESET                  | 001   | none                 | none          | 1               | 1                    | 0
-IMU RESET                     | 002   | none                 | none          | 1               | 3                    | 1
+IMU RESET                     | 002   | none                 | none          | 1               | 1                    | 2
 IMU SUSPEND                   | 003   | none                 | none          | 2               | 1                    | 1
 IMU UN-SUSPEND                | 004   | none                 | none          | 2               | 1                    | 1
 QUERY SOH                     | 005   | 1 int                | 1 int         | 2               | 1                    | 0
 ENTER SH MODE                 | 006   | 1 float              | 1 int         | 1               | 1                    | 0
 EXIT SH MODE                  | 007   | 1 int                | 1 int         | 1               | 1                    | 0
 QUERY MODE                    | 008   | none                 | 1 int         | 3               | 2                    | 0
-QUERY FREE MEMORY             | 009   | none                 | 1 int         | 3               | 3                    | 0
+QUERY FREE MEMORY             | 009   | none                 | 1 int         | 3               | 3                    | 1
 QUERY FREE FILESYSTEM STORAGE | 010   | none                 | 1 int         | 3               | 4                    | 0
 QUERY FILESYSTEM CONTENTS     | 011   | 1 string             | 1 string      | 3               | 4                    | 0
 DELETE FILE                   | 012   | 1 string             | 1 int         | 4               | 4                    | 0
@@ -175,8 +175,8 @@ END TASK                      | 107   | 1 int                | none          | 2
 QUERY RECORDS                 | 108   | none                 | 1 string      | 4               | 5                    | 0
 RECORD                        | 109   | 1 int, 2 float, 1 str| none          | 4               | 5                    | 0
 END RECORD                    | 110   | 1 int                | none          | 4               | 5                    | 0
-QUERY MAGNETIC FIELD DATA     | 201   | none                 | 3 float       | 2               | 1                    | 1
-QUERY RATE DATA               | 202   | none                 | 3 float       | 2               | 1                    | 1
+QUERY MAGNETIC FIELD DATA     | 201   | none                 | 3 float       | 2               | 1                    | 2
+QUERY RATE DATA               | 202   | none                 | 3 float       | 2               | 1                    | 2
 QUERY SUN SENSOR DATA         | 203   | none                 | n float       | 2               | 1                    | 0
 QUERY ATTITUDE                | 204   | 1 int                | 3 or 4 float  | 2               | 1                    | 0
 QUERY SYSTEM TEMPERATURE      | 205   | none                 | 1 float       | 2               | 1                    | 1

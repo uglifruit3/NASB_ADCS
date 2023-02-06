@@ -4,63 +4,20 @@ from time import monotonic
 import board
 from busio import I2C
 
+from CFG import *
+
 #==========================#
 # Custom classes           #
 #==========================#
-
-class system_state():
-    # tracks system settings
-    # initializes from values specified in STARTUP.txt 
-    def __init__(self):
-        # accepts variable as a string
-        def set_state_variable(var, sw, str_val):
-            try:
-                sw[var] = int(str_val)
-            except ValueError:
-                sw[var] = str_val
-
-        switch = {
-                "terminal_output":0,
-                "system_read_only":0,
-                "max_log_entries":0,
-                "startup_delay":0,
-                "log_level":0
-                }
-
-        with open("STARTUP.txt", "r") as infile:
-            line = infile.readline()
-            while line:
-                line_list = line.split(" ")
-                line_list[1] = line_list[1].strip("\n")
-                line_list[0] = line_list[0].strip(" ")
-                set_state_variable(line_list[0], switch, line_list[1])
-                line = infile.readline()
-
-        if switch["terminal_output"] == "true":
-            self.terminal_output = True
-        else:
-            self.terminal_output = False
-        if switch["system_read_only"] == "true":
-            self.system_read_only = True
-        else:
-            self.system_read_only = False
-
-        self.max_log_entries = switch["max_log_entries"]
-        self.startup_delay = switch["startup_delay"]
-        self.log_level = switch["log_level"]
-
-        self.active_records = 0
-        # tracks the command index currently in execution
-        self.command = 0
 
 #==========================#
 # Global declarations      #
 #==========================#
 
 # global system state tracker
-SYS_STATE = system_state()
+# SYS_STATE = system_state()
 # I2C protocol object
-P_I2C = I2C(scl=board.SCL, sda=board.SDA)
+# P_I2C = I2C(scl=board.SCL, sda=board.SDA)
 
 #==========================#
 # Custom functions         #
@@ -102,3 +59,12 @@ def startup_delay():
         t_c = monotonic()
 
     return
+
+# scans for I2C devices and returns a list of found device addresses
+def i2c_scan(i2c):
+    while i2c.try_lock() is False:
+        pass
+
+    a = i2c.scan()
+    i2c.unlock()
+    return a

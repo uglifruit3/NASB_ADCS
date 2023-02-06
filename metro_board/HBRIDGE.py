@@ -1,7 +1,7 @@
 # This is the custom driver for the L293D H-bridges, which control the 3 onboard magnetic coils
 
 import board
-import pwmio
+from pwmio import PWMOut
 
 #==========================#
 # Custom classes           #
@@ -12,8 +12,8 @@ class H_Bridge_Coil():
     def __init__(self, f_pin, b_pin):
         # state is -1 for backward, 0 for off, 1 for forward
         self.state = 0
-        self.forward  = pwmio.PWMOut(f_pin, frequency=5000, duty_cycle=0)
-        self.backward = pwmio.PWMOut(b_pin, frequency=5000, duty_cycle=0)
+        self.forward  = PWMOut(f_pin, frequency=5000, duty_cycle=0)
+        self.backward = PWMOut(b_pin, frequency=5000, duty_cycle=0)
 
     # accepts a number between 0 and 1, self.state should be set to specify direction
     def set_duty_cycle(self, dc):
@@ -26,13 +26,8 @@ class H_Bridge_Coil():
 # Custom functions         #
 #==========================#
 
+# initializes an array of 3 h-bridge powered coils
 def init_hbridge_coils(C1F, C1B, C2F, C2B, C3F, C3B):
     return ( H_Bridge_Coil(C1F, C1B), 
              H_Bridge_Coil(C2F, C2B),
              H_Bridge_Coil(C3F, C3B) )
-
-#==========================#
-# Global declarations      #
-#==========================#
-
-D_COILS = init_hbridge_coils(board.D2, board.D3, board.D4, board.D5, board.D6, board.D7)

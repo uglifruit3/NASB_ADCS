@@ -7,12 +7,9 @@ import adafruit_bno055
 from sys import exit
 from digitalio import DigitalInOut, Direction, Pull
 
+from CFG import *
 # system routine libraries
-from  MASTER_PROCESS import SYS_STATE, P_I2C
 import MASTER_PROCESS
-
-# default location of IMU calibration offsets
-F_IMU_CALIBRATION_PROFILE = "/00_cal_profile.txt" 
 
 #==========================#
 # Custom classes           #
@@ -24,16 +21,11 @@ class Inertial_Measurement_Unit(adafruit_bno055.BNO055_I2C):
         # initialize class assets from adafruit_bno055.BNO055
         super().__init__(i2c)
         # configure to default modes
-        #self.set_normal_mode()
-        #self.mode = adafruit_bno055.MAGGYRO_MODE
+        self.set_normal_mode()
+        self.mode = adafruit_bno055.MAGGYRO_MODE
 
         # setting up reset pin
-        if rst != 0:
-            self.reset_T = DigitalInOut(rst)
-            self.reset_T.direction = Direction.OUTPUT
-            self.reset_T.value = True
-        else:
-            self.reset_T = 0
+        self.reset_T = rst
 
         # calibration 
         # note that the built-in accelerometer is excluded in all calibration routines, as it will not see use in this implementation
@@ -52,7 +44,7 @@ class Inertial_Measurement_Unit(adafruit_bno055.BNO055_I2C):
         try:
             tmp = list(self.calibration_status)
         except OSError:
-            MASTER_PROCESS.announce_event("IMU", "ERROR", "Bad read on calibration register(s).")
+            MASTER_PROCESS.announce_event("IMU", "ERROR", f"Bad read on calibration register(s) on read {self.calib_reads}.")
         else:
             self.cal_stats_T["sys"] = tmp[0] 
             self.cal_stats_T["gyro"] = tmp[1] 
@@ -118,7 +110,7 @@ class Inertial_Measurement_Unit(adafruit_bno055.BNO055_I2C):
     # calibrates the IMU. 
     # Automatic calibration attempts to read from a profile
     # Interactive calibration waits for the user to correctly calibrate the IMU
-    def calibrate(self, profile=F_IMU_CALIBRATION_PROFILE, auto_cal=True, inter_cal=True):
+    def calibrate(self, auto_cal=True, inter_cal=True, profile=F_IMU_CALIBRATION_PROFILE):
         # if the system is already calibrated
         if self.is_calibrated() is True:
             MASTER_PROCESS.announce_event("IMU", "INFO", "IMU calibrated.")
@@ -130,6 +122,7 @@ class Inertial_Measurement_Unit(adafruit_bno055.BNO055_I2C):
             if err is False:
                 self.write_IMU_offsets()
 
+            self.fetch_calibration_status()
             if self.is_calibrated() is True:
                 MASTER_PROCESS.announce_event("IMU", "INFO", "IMU calibrated.")
                 return
@@ -145,7 +138,6 @@ class Inertial_Measurement_Unit(adafruit_bno055.BNO055_I2C):
 
             while self.is_calibrated() is False:
                 print("\r   ", end="")
-                # TODO need to figure out why these aren't updating
                 for sensor in self.cal_stats_T:
                     print(sensor + ": " + str(self.cal_stats_T[sensor]) + "   ", end="")
                 sleep(0.1)
@@ -154,17 +146,9 @@ class Inertial_Measurement_Unit(adafruit_bno055.BNO055_I2C):
             # save sensor offsets to default calibration profile and return to original sensor modes
             self.mode = orig_mode
             MASTER_PROCESS.announce_event("IMU", "INFO", "IMU calibrated.")
-            if SYS_STATE.system_read_only == "false":
+            if SYS_STATE.system_read_only is False:
                 self.read_IMU_offsets()
                 self.write_profile_offsets()
-
-    def fetch_mag_data(self):
-        try:
-            tmp = list(self.magnetic)
-        except OSError:
-            MASTER_PROCESS.announce_event("IMU", "ERROR", "Bad read on magnetometer register(s).", cmd=201)
-        else:
-            return tmp
 
     def check_init(self, i2c):
         if type(self) is not type(Inertial_Measurement_Unit(i2c)):
@@ -173,9 +157,3 @@ class Inertial_Measurement_Unit(adafruit_bno055.BNO055_I2C):
         else:
             MASTER_PROCESS.announce_event("IMU", "DEBUG", "IMU connected.")
             return 0
-
-#==========================#
-# Global declarations      #
-#==========================#
-
-D_IMU = Inertial_Measurement_Unit(P_I2C, rst=board.D8)
