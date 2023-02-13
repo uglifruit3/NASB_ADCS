@@ -186,11 +186,11 @@ CALIBRATE SENSOR SYSTEM       | 208   | none                 | 1 int         | 4
 DOWNLINK SENSOR DATA          | 209   | 1 int                | none          | 2               | 2                    | 0
 MOMENTUM WHEEL RESET          | 301   | none                 | none          | 1               | 3                    | 0
 QUERY MOMENTUM WHEEL SPEED    | 302   | none                 | 1 float       | 2               | 3                    | 0
-MAGNETIC DEVICE RESET         | 303   | none                 | none          | 1               | 3                    | 0
+MAGNETIC DEVICE RESET         | 303   | none                 | none          | 1               | 3                    | 1
 QUERY MAGNETIC DEVICE POWER   | 304   | none                 | 3 float       | 2               | 3                    | 0
-DETUMBLE                      | 401   | 1 or 2 float, 1 int  | none          | 1               | 1                    | 0
+DETUMBLE                      | 401   | 1 or 2 float, 1 int  | none          | 1               | 1                    | 1
 ORIENT TO NADIR               | 402   | 2 or 3 float, 1 int  | none          | 1               | 1                    | 0
-TERMINATE ATTITUDE COMMAND    | 403   | none                 | 1 int         | 1               | 1                    | 0
+TERMINATE ATTITUDE COMMAND    | 403   | none                 | 1 int         | 1               | 1                    | 1
 
 Notes:
 1. Development priority is rated 1 (highest) to 5 (lowest).
@@ -214,11 +214,11 @@ The system will call routines implemented in the following library files:
 * CMDS_2 - contains the supporting functions and classes for executing commands with indices 2XX.
 * CMDS_3 - contains the supporting functions and classes for executing commands with indices 3XX.
 * CMDS_4 - contains the supporting functions and classes for executing commands with indices 4XX.
-* CMDS_4_MATH - contains functions for performing high-speed computations in support of ADCS_COMMANDS_4. This library will likely be written in C or C++, then compiled to a Python library.
+* CMD_INDEX - contains a custom class for commands and fully indexes them and enables execution by that index.
 
 MASTER_PROCESS will be prototyped before any CMDS_*N* libraries can be constructed. The progress on these is as follows:
 
-MASTER PROCESS | PLD_INTERFACE | CMDS_0 | CMDS_1 | CMDS_2 | CMDS_3 | CMDS_4 | CMDS_4_MATH 
+MASTER PROCESS | PLD_INTERFACE | CMDS_0 | CMDS_1 | CMDS_2 | CMDS_3 | CMDS_4 | CMDS_INDEX
 ---------------|---------------|--------|--------|--------|--------|--------|-------------
 indev          | -             | -      | -      | indev  | -      | -      | -
 

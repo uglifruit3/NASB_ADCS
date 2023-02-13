@@ -1,5 +1,6 @@
 from digitalio import DigitalInOut, Direction
 from time import sleep
+from  gc import mem_free
 
 from CFG import *
 
@@ -30,3 +31,8 @@ def IMU_RESET():
     # re-initialize imu
     D_IMU = BNO055.Inertial_Measurement_Unit(P_I2C, rst=board.D8)
     MASTER_PROCESS.announce_event("IMU", "INFO", "Performed hardware reset.", cmd=002)
+
+def QUERY_FREE_MEMORY():
+    mem = mem_free()
+    MASTER_PROCESS.announce_event("SYS", "INFO", f"{mem} bytes free.", cmd=009)
+    return mem

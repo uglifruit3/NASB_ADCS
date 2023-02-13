@@ -7,19 +7,6 @@ from busio import I2C
 from CFG import *
 
 #==========================#
-# Custom classes           #
-#==========================#
-
-#==========================#
-# Global declarations      #
-#==========================#
-
-# global system state tracker
-# SYS_STATE = system_state()
-# I2C protocol object
-# P_I2C = I2C(scl=board.SCL, sda=board.SDA)
-
-#==========================#
 # Custom functions         #
 #==========================#
 

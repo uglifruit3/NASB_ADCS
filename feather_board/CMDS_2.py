@@ -3,8 +3,11 @@
 from CFG import *
 
 import MASTER_PROCESS
-
 import CMDS_0
+
+#==========================#
+# Command functions        #
+#==========================#
 
 def QUERY_MAGNETIC_FIELD_DATA():
     try:
