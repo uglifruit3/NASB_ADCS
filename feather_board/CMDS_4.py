@@ -4,14 +4,15 @@ from time import monotonic, sleep
 from math import sqrt, isnan
 
 from CFG import *
-
 import MASTER_PROCESS
+
 import CMDS_2
 
 #==========================#
 # Assist functions         #
 #==========================#
 # TODO remove testing once fully validated and simplified
+# TODO low-pass filter to remove noisy data
 def bdot_controller(Bdot=[float('nan'), float('nan'), float('nan')]):
     # Get B_dot
     if not isnan(Bdot[0]):

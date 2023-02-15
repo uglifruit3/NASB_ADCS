@@ -184,10 +184,12 @@ CALIBRATE GYROSCOPE           | 206   | none                 | 1 int         | 4
 CALIBRATE MAGNETOMETER        | 207   | none                 | 1 int         | 4               | 5                    | 1
 CALIBRATE SENSOR SYSTEM       | 208   | none                 | 1 int         | 4               | 5                    | 1
 DOWNLINK SENSOR DATA          | 209   | 1 int                | none          | 2               | 2                    | 0
-MOMENTUM WHEEL RESET          | 301   | none                 | none          | 1               | 3                    | 0
-QUERY MOMENTUM WHEEL SPEED    | 302   | none                 | 1 float       | 2               | 3                    | 0
-MAGNETIC DEVICE RESET         | 303   | none                 | none          | 1               | 3                    | 1
-QUERY MAGNETIC DEVICE POWER   | 304   | none                 | 3 float       | 2               | 3                    | 0
+MOMENTUM WHEEL SPINUP         | 301   | none                 | none          | 1               | 1                    | 0
+MOMENTUM WHEEL SPINDOWN       | 302   | none                 | none          | 1               | 2                    | 0
+QUERY MOMENTUM WHEEL SPEED    | 303   | none                 | 1 float       | 2               | 3                    | 0
+SET MOMENTUP WHEEL SPEED      | 304   | 1 int                | 1 float       | 2               | 1                    | 0
+MAGNETIC DEVICE RESET         | 305   | none                 | none          | 1               | 3                    | 1
+QUERY MAGNETIC DEVICE POWER   | 306   | none                 | 3 float       | 2               | 3                    | 0
 DETUMBLE                      | 401   | 1 or 2 float, 1 int  | none          | 1               | 1                    | 1
 ORIENT TO NADIR               | 402   | 2 or 3 float, 1 int  | none          | 1               | 1                    | 0
 TERMINATE ATTITUDE COMMAND    | 403   | none                 | 1 int         | 1               | 1                    | 1

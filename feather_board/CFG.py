@@ -1,4 +1,3 @@
-# TODO in process of migrating globals; need to ensure correctness and consistency
 from busio import I2C
 import board
 
