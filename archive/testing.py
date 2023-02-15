@@ -35,9 +35,18 @@ def init_dig_input(pin=0):
     if pin == 0:
         return 0
 
+    inp = DigitalInOut(pin)
+    inp.direction = Direction.INPUT
+    inp.pull = Pull.DOWN
+
+    return inp
+
+def init_dig_output(pin=0):
+    if pin == 0:
+        return 0
+
     out = DigitalInOut(pin)
-    out.direction = Direction.INPUT
-    out.pull = Pull.DOWN
+    out.direction = Direction.OUTPUT
 
     return out
 
