@@ -15,13 +15,7 @@ import CMDS_4
 def test_bdot():
     cnt = 0
     while True:
-
         t_i = monotonic()
-        for i in D_COILS:
-            i.state = -1
-            i.set_duty_cycle(1)
-        print("Coils on")
-
         while monotonic()-t_i < 0.9:
             pass
 
@@ -33,7 +27,20 @@ def test_bdot():
         while monotonic()-t_i < 1.0:
             pass
         print(f"[{cnt}] B_body: {CMDS_2.QUERY_MAGNETIC_FIELD_DATA()}")
-        print(f"[{cnt}] Ordered m = {CMDS_4.bdot_controller()}")
+        m = CMDS_4.bdot_controller()
+        print(f"[{cnt}] Ordered m = {m}")
+
+        for i in range(0,3):
+            dc = CMDS_4.m_to_dutycycle(m[i])
+            if dc < 0:
+                D_COILS[i].state = -1
+            elif dc > 0:
+                D_COILS[i].state = 1
+            else:
+                D_COILS[i].state = 0
+
+            D_COILS[i].set_duty_cycle(abs(dc))
+        print("\nCoils on")
 
 def get_bdot_realtime():
     while True:
@@ -69,3 +76,12 @@ def fade_hbridge():
         print(f"\rDuty cycle: {pwr:.4f}", end="")
         cnt += 0.001
         sleep(0.001)
+
+def mag_timer():
+    t_0 = monotonic()
+    B_0 = CMDS_2.QUERY_MAGNETIC_FIELD_DATA()
+    B_1 = CMDS_2.QUERY_MAGNETIC_FIELD_DATA()
+    t_1 = monotonic()
+    dt = t_1 - t_0
+
+    return dt

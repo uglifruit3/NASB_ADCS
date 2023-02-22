@@ -1,4 +1,5 @@
 # This is the system routine library for all 2XX series commands
+from time import sleep
 
 from CFG import *
 import MASTER_PROCESS
@@ -29,12 +30,14 @@ def QUERY_MAGNETIC_FIELD_DATA():
     except OSError:
         MASTER_PROCESS.announce_event("IMU", "ERROR", "Bad read on magnetometer register(s).", cmd=202)
         CMDS_0.IMU_RESET()
-        tmp = QUERY_MAGNETIC_FIELD_DATA()
-    else:
-        tmp = QUERY_MAGNETIC_FIELD_DATA()
+        tmp = list(D_IMU.magnetic)
 
     while tmp[0] == None:
-        tmp = QUERY_MAGNETIC_FIELD_DATA()
+        tmp = list(D_IMU.magnetic)
+
+    for i in tmp:
+        i = i/1e6 # conversion from microT to T
+
     return tmp
     
 def QUERY_SYSTEM_TEMPERATURE():

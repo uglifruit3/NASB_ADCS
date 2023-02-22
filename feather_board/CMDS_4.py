@@ -13,32 +13,79 @@ import CMDS_2
 #==========================#
 # TODO remove testing once fully validated and simplified
 # TODO low-pass filter to remove noisy data
-def bdot_controller(Bdot=[float('nan'), float('nan'), float('nan')]):
+def get_bdot_v0():
     # Get B_dot
-    if not isnan(Bdot[0]):
-        B_dot = Bdot
-    else:
-        t_i = monotonic()
-        B_old = CMDS_2.QUERY_MAGNETIC_FIELD_DATA()
-        sleep(0.02)
-        B = CMDS_2.QUERY_MAGNETIC_FIELD_DATA()
-        dt = monotonic() - t_i
+    t_i = monotonic()
+    B_old = CMDS_2.QUERY_MAGNETIC_FIELD_DATA()
+    sleep(0.02)
+    B = CMDS_2.QUERY_MAGNETIC_FIELD_DATA()
+    dt = monotonic() - t_i
 
-        B_dot = [ (B[0] - B_old[0])/(dt*1e6),
-                  (B[1] - B_old[1])/(dt*1e6),
-                  (B[2] - B_old[2])/(dt*1e6) 
-                ]
+    B_dot = [ (B[0] - B_old[0])/dt,
+              (B[1] - B_old[1])/dt,
+              (B[2] - B_old[2])/dt 
+            ]
 
+    return B_dot
+
+# TODO consider obtaining more sample passes to better de-noise the data
+def get_bdot_v1():
+    # define time constant
+    # N_d = 10 is calibrated for current refresh every ~0.02 sec
+    N_d = 10
+    # get samples
+    t_0 = monotonic()
+    B_0 = CMDS_2.QUERY_MAGNETIC_FIELD_DATA()
+    sleep(0.02)
+    B_1 = CMDS_2.QUERY_MAGNETIC_FIELD_DATA()
+    t_1 = monotonic()
+    dt = t_1 - t_0
+
+    # perform low-pass filtering of samples
+    # using tustin-transformed 1st order xfer function for de-noising. 
+    # Tuned to body rotation rate of 0.025Hz w/decade separation
+    B_dot01 = [ (B_1[0]-B_0[0]) / dt,
+                (B_1[1]-B_0[1]) / dt,
+                (B_1[2]-B_0[2]) / dt
+              ]
+
+    # get another B_body sample
+    sleep(0.02)
+    B_2 = CMDS_2.QUERY_MAGNETIC_FIELD_DATA()
+    t_2 = monotonic()
+    dt = t_2 - t_1
+    # perform second pass of filtering; return this value
+    B_dot12 = [ ((B_dot01[0]/N_d) + B_1[0]-B_0[0]) / (dt+(1/N_d)),
+                ((B_dot01[1]/N_d) + B_1[1]-B_0[1]) / (dt+(1/N_d)),
+                ((B_dot01[2]/N_d) + B_1[2]-B_0[2]) / (dt+(1/N_d))
+              ]
+
+    return B_dot12
+
+def get_bdot_v2(time_up):
+    # need to optimize for avg sample time ~0.00623
+    N_d = 10
+
+
+def bdot_controller():
+    B_dot = get_bdot_v1()
+
+    # for testing purposes
     print(f"     B_dot = {B_dot} T/s")
 
     # B_dot control constants
-    # ensure that these values are correct and usable
-    KBdot = 1e5 # gain
-    Bdotmin = 0.1e-6 # minimum rate of change for motor use
-    msat = 0.1 # max dipole moment commandable
+    # TODO ensure that these values are correct and usable
+    # original sim values below:
+    # KBdot = 1e5      # gain
+    # Bdotmin = 0.1e-6 # (T) minimum rate of change for motor use
+    # msat = 0.1       # (A/m^2) max dipole moment commandable
+    # experimental values
+    KBdot = 1e-2      # gain
+    Bdotmin = 0.1e-6 # (T) minimum rate of change for motor use
+    msat = 0.0359       # (A/m^2) max dipole moment commandable
 
     # compute required dipole moment
-    m = [0, 0, 0]
+    m = [0, 0, 0] # initialie to 0
     if sqrt(sum(pow(i,2) for i in B_dot)) > Bdotmin:
         m[0] = -1*KBdot*B_dot[0]
         m[1] = -1*KBdot*B_dot[1]
@@ -50,3 +97,7 @@ def bdot_controller(Bdot=[float('nan'), float('nan'), float('nan')]):
             m[i] = (m[i]/abs(m[i])) * msat
 
     return m
+
+def m_to_dutycycle(m):
+    v = (m*18.9*4) / (300*3.1415*0.02*0.02)
+    return v / 7.2

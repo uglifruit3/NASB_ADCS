@@ -6,12 +6,15 @@ from pwmio import PWMOut
 #==========================#
 # Custom classes           #
 #==========================#
+forward = 1
+backward = -1
+off = 0
 
 class H_Bridge_Coil():
     # accepts the digital output pins (board.DX, for example) for use as the forward and backward signals to the H-bridge
     def __init__(self, f_pin, b_pin):
         # state is -1 for backward, 0 for off, 1 for forward
-        self.state = 0
+        self.state = off
         self.forward  = PWMOut(f_pin, frequency=5000, duty_cycle=0)
         self.backward = PWMOut(b_pin, frequency=5000, duty_cycle=0)
 
@@ -21,6 +24,14 @@ class H_Bridge_Coil():
         # abs(self.state) and (-1|+1 + self.state)/2 sets power in either direction
         self.backward.duty_cycle = abs(self.state*int((-1+self.state)*dc*65535 / 2))
         self.forward.duty_cycle  = abs(self.state*int((1+self.state)*dc*65535 / 2))
+
+    def set_state(self, new_state)
+        if abs(new_state) == forward or new_state == off:
+            self.state = new_state
+        else:
+            self.state = off
+
+        self.set_duty_cycle(self.dc)
 
 #==========================#
 # Custom functions         #

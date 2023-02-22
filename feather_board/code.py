@@ -19,5 +19,14 @@ def main():
 # =================== #
 
 main()
-D_IMU.calibrate()
-testing.get_bdot_realtime()
+cnt = 0
+sum_t = 0
+hi = 0
+while True:
+    cnt += 1
+    t = testing.mag_timer()
+    if t > hi:
+        hi = t
+    sum_t += t
+    avg = sum_t/cnt
+    print(f"\rTime between reads: {t:10.8f} {avg:10.8f} {hi:10.8f}", end="")
