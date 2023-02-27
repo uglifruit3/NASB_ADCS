@@ -21,26 +21,18 @@ def test_bdot():
 
         for i in D_COILS:
             i.set_duty_cycle(0)
-        print("Coils off")
         cnt+=1
 
+        print(f"[{cnt}] B_body: {CMDS_2.QUERY_MAGNETIC_FIELD_DATA()}")
+        t_start = monotonic()
+        m = CMDS_4.bdot_controller()
+        print(f"[{cnt}] Ordered m = {m} in {monotonic()-t_start}s\n")
         while monotonic()-t_i < 1.0:
             pass
-        print(f"[{cnt}] B_body: {CMDS_2.QUERY_MAGNETIC_FIELD_DATA()}")
-        m = CMDS_4.bdot_controller()
-        print(f"[{cnt}] Ordered m = {m}")
 
         for i in range(0,3):
             dc = CMDS_4.m_to_dutycycle(m[i])
-            if dc < 0:
-                D_COILS[i].state = -1
-            elif dc > 0:
-                D_COILS[i].state = 1
-            else:
-                D_COILS[i].state = 0
-
-            D_COILS[i].set_duty_cycle(abs(dc))
-        print("\nCoils on")
+            D_COILS[i].set_duty_cycle(dc)
 
 def get_bdot_realtime():
     while True:
@@ -59,22 +51,28 @@ def get_bdot_realtime():
 
 
 def test_mag_data():
-    t_start = monotonic()
     while True:
-        data = CMDS_2.QUERY_MAGNETIC_FIELD_DATA()
-        print("{c1:06.2f}> {e1:06.2f} {e2:06.2f} {e3:06.2f}".format(c1=monotonic()-t_start, e1=data[0], e2=data[1], e3=data[2]), end="\r")
+        t_start = monotonic()
+        cnt = 0
+        B_tot = [0, 0, 0]
+        while monotonic()-t_start < 0.045:
+            data = CMDS_2.QUERY_MAGNETIC_FIELD_DATA()
+            cnt += 1
+            print(f"{data[0]:03.1f} {data[1]:03.1f} {data[2]:03.1f}", end="")
+            for i in range(0,3):
+                B_tot[i] += data[i]
+            print(f" || {B_tot[0]/cnt:03.2f} {B_tot[1]/cnt:03.2f} {B_tot[2]/cnt:03.2f}", end="\r")
+        print("")
+
 
 def fade_hbridge():
-    for i in D_COILS:
-        i.state = 1
+    cnt = 0
     while True:
-        pwr = (sin(cnt) + 1) / 2
+        pwr = sin(cnt)
         for i in D_COILS:
-            if pwr == 0:
-                i.state = i.state*-1
             i.set_duty_cycle(pwr)
         print(f"\rDuty cycle: {pwr:.4f}", end="")
-        cnt += 0.001
+        cnt += 0.004
         sleep(0.001)
 
 def mag_timer():
@@ -85,3 +83,9 @@ def mag_timer():
     dt = t_1 - t_0
 
     return dt
+
+def mag_history():
+    t_0 = monotonic()
+    while True:
+        CMDS_4.bdot_controller_timer(monotonic()-t_0)
+        sleep(0.9)
