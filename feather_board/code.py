@@ -30,4 +30,4 @@ main()
 #     sum_t += t
 #     avg = sum_t/cnt
 #     print(f"\rTime between reads: {t:10.8f} {avg:10.8f} {hi:10.8f}", end="")
-testing.mag_history()
+testing.test_photor()

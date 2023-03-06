@@ -1,38 +1,49 @@
 # python and circuitpython libraries
-from math import sin
+from math import sin,sqrt
 # import adafruit_bno055
 from time import monotonic, sleep
+from analogio import AnalogIn
+import board
 
 from CFG import *
 # system routine libraries
-import MASTER_PROCESS 
+import MASTER_PROCESS
 
 # command routine libraries
 import CMDS_0
 import CMDS_2
 import CMDS_4
 
-def test_bdot():
+def test_detumble():
     cnt = 0
-    while True:
-        t_i = monotonic()
-        while monotonic()-t_i < 0.9:
-            pass
+    B = CMDS_2.QUERY_MAGNETIC_FIELD_DATA()
+    B_dot = [0, 0, 0]
+    quit = False
+    while quit is False:
+        try:
+            t_i = monotonic()
+            while monotonic()-t_i < 0.9:
+                pass
 
-        for i in D_COILS:
-            i.set_duty_cycle(0)
-        cnt+=1
+            for i in D_COILS:
+                i.set_duty_cycle(0)
+            cnt+=1
 
-        print(f"[{cnt}] B_body: {CMDS_2.QUERY_MAGNETIC_FIELD_DATA()}")
-        t_start = monotonic()
-        m = CMDS_4.bdot_controller()
-        print(f"[{cnt}] Ordered m = {m} in {monotonic()-t_start}s\n")
-        while monotonic()-t_i < 1.0:
-            pass
+            t_start = monotonic()
+            data = CMDS_4.get_bdot(0.1, B, B_dot)
+            B = data[0]
+            B_dot = data[1]
+            print(f"[{cnt}] B: {data[0]} || B_dot: {data[1]}, mag: {sqrt(sum(pow(i,2) for i in data[1]))}")
+            m = CMDS_4.bdot_controller(data[1])
+            print(f"[{cnt}] Ordered m = {m} in {monotonic()-t_start}s\n")
+            while monotonic()-t_i < 1.0:
+                pass
 
-        for i in range(0,3):
-            dc = CMDS_4.m_to_dutycycle(m[i])
-            D_COILS[i].set_duty_cycle(dc)
+            for i in range(0,3):
+                dc = CMDS_4.m_to_dutycycle(m[i])
+                D_COILS[i].set_duty_cycle(dc)
+        except KeyboardInterrupt:
+            quit = True
 
 def get_bdot_realtime():
     while True:
@@ -44,25 +55,30 @@ def get_bdot_realtime():
 
         B_dot = [ (B[0] - B_old[0])/(dt*1e6),
                   (B[1] - B_old[1])/(dt*1e6),
-                  (B[2] - B_old[2])/(dt*1e6) 
+                  (B[2] - B_old[2])/(dt*1e6)
                 ]
 
         print(f"\r     B_dot = {B_dot[0]:+02.6e}, {B_dot[1]:+02.6e}, {B_dot[2]:+02.6e} T/s", end="")
 
 
 def test_mag_data():
-    while True:
-        t_start = monotonic()
-        cnt = 0
-        B_tot = [0, 0, 0]
-        while monotonic()-t_start < 0.045:
-            data = CMDS_2.QUERY_MAGNETIC_FIELD_DATA()
-            cnt += 1
-            print(f"{data[0]:03.1f} {data[1]:03.1f} {data[2]:03.1f}", end="")
+    t_start = monotonic()
+    B = CMDS_2.QUERY_MAGNETIC_FIELD_DATA()
+    B_dot = [0, 0, 0]
+    quit = False
+    while quit is False:
+        try:
+            data = CMDS_4.get_bdot_v2(0.1, B, B_dot)
+            B = data[0]
+            B_dot = data[1]
+            data3 = [0, 0, 0, 0, 0, 0]
             for i in range(0,3):
-                B_tot[i] += data[i]
-            print(f" || {B_tot[0]/cnt:03.2f} {B_tot[1]/cnt:03.2f} {B_tot[2]/cnt:03.2f}", end="\r")
-        print("")
+                data3[i]   = B[i]*1e5
+                data3[i+3] = B_dot[i]*1e6
+            print((data3[3], data3[4], data3[5]))
+            sleep(0.9)
+        except KeyboardInterrupt:
+            quit = True
 
 
 def fade_hbridge():
@@ -89,3 +105,10 @@ def mag_history():
     while True:
         CMDS_4.bdot_controller_timer(monotonic()-t_0)
         sleep(0.9)
+
+# TODO need to figure out best pull-down resistance for biggest voltage range
+def test_photor():
+    ain = AnalogIn(board.A0)
+    while True:
+        print(f"Voltage: {ain.value*3.3/65536:4.2f}V", end="\r")
+        sleep(0.1)

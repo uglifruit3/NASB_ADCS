@@ -35,8 +35,8 @@ def QUERY_MAGNETIC_FIELD_DATA():
     while tmp[0] == None:
         tmp = list(D_IMU.magnetic)
 
-    for i in tmp:
-        i = i/1e6 # conversion from microT to T
+    for i in range(0,3):
+        tmp[i] /= 1e6 # conversion from microT to T
 
     return tmp
     
