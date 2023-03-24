@@ -2,6 +2,8 @@ from CFG import *
 # system routine libraries
 import MASTER_PROCESS 
 
+import SUNSENSOR
+
 # command routine libraries
 import CMDS_0
 import CMDS_2
@@ -30,4 +32,4 @@ main()
 #     sum_t += t
 #     avg = sum_t/cnt
 #     print(f"\rTime between reads: {t:10.8f} {avg:10.8f} {hi:10.8f}", end="")
-testing.test_photor()
+testing.test_CSS() 

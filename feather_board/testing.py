@@ -112,3 +112,10 @@ def test_photor():
     while True:
         print(f"Voltage: {ain.value*3.3/65536:4.2f}V", end="\r")
         sleep(0.1)
+
+def test_CSS():
+    while True:
+        for i in D_CSS:
+            print(f"{i.light_level():4.2f} ", end="")
+        print("\r", end="")
+        sleep(0.05)

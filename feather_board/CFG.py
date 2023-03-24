@@ -1,5 +1,16 @@
+# CFG contains all global variables and defines the system state class
+# Naming conventions are as follows:
+#   - Protocols are prepended with a P_
+#   - Devices are prepended with a D_
+#   - Files are prepended with a F_
+#   - 
 from busio import I2C
 import board
+
+# imu calibration file
+F_IMU_CALIBRATION_PROFILE = "/00_cal_profile.txt" 
+# system state file
+F_SYSSTATE = "STARTUP.txt"
 
 class system_state():
     # tracks system settings
@@ -20,7 +31,7 @@ class system_state():
                 "log_level":0
                 }
 
-        with open("STARTUP.txt", "r") as infile:
+        with open(F_SYSSTATE, "r") as infile:
             line = infile.readline()
             while line:
                 line_list = line.split(" ")
@@ -45,9 +56,8 @@ class system_state():
         self.active_records = 0
         # tracks the command index currently in execution
         self.command = 0
-
-# imu calibration object
-F_IMU_CALIBRATION_PROFILE = "/00_cal_profile.txt" 
+        # tracks whether the system is running asynchronous commands
+        self.async_mode = False
 
 # I2C protocol object
 P_I2C = I2C(scl=board.SCL, sda=board.SDA)
@@ -56,7 +66,10 @@ SYS_STATE = system_state()
 
 from BNO055 import Inertial_Measurement_Unit
 from HBRIDGE import init_hbridge_coils
+from SUNSENSOR import init_sun_sensors
 # array of 3 h-bridge powered magnetic coils
 D_COILS = init_hbridge_coils(board.D6, board.D9, board.D10, board.D11, board.D12, board.D13)
 # inertial measurement unit
 D_IMU = Inertial_Measurement_Unit(P_I2C, rst=board.D4)
+# coarse sun sensor array
+D_CSS = init_sun_sensors([board.A0, board.A1, board.A2, board.A3, board.A4, board.A5])

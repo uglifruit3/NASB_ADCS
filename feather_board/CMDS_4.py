@@ -63,10 +63,7 @@ def bdot_controller(B_dot):
     for i in range(0,3):
         if abs(m[i]) > msat:
             m[i] = (m[i]/abs(m[i])) * msat
-
-    return m
-
-def m_to_dutycycle(m):
+    # compute and return voltage required for magnetorquers
     v = (m*18.9*4) / (300*3.1415*0.02*0.02)
     return v/7.2
 
