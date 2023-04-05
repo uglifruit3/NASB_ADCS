@@ -178,12 +178,13 @@ END RECORD                    | 110   | 1 int                | none          | 4
 QUERY MAGNETIC FIELD DATA     | 201   | none                 | 3 float       | 2               | 1                    | 2
 QUERY RATE DATA               | 202   | none                 | 3 float       | 2               | 1                    | 2
 QUERY SUN SENSOR DATA         | 203   | none                 | n float       | 2               | 1                    | 0
-QUERY ATTITUDE                | 204   | 1 int                | 3 or 4 float  | 2               | 1                    | 0
-QUERY SYSTEM TEMPERATURE      | 205   | none                 | 1 float       | 2               | 1                    | 1
-CALIBRATE GYROSCOPE           | 206   | none                 | 1 int         | 4               | 5                    | 1
-CALIBRATE MAGNETOMETER        | 207   | none                 | 1 int         | 4               | 5                    | 1
-CALIBRATE SENSOR SYSTEM       | 208   | none                 | 1 int         | 4               | 5                    | 1
-DOWNLINK SENSOR DATA          | 209   | 1 int                | none          | 2               | 2                    | 0
+QUERY SUN VECTOR              | 204   | none                 | 3 float       | 2               | 1                    | 0
+QUERY ATTITUDE                | 205   | 1 int                | 3 or 4 float  | 2               | 1                    | 0
+QUERY SYSTEM TEMPERATURE      | 206   | none                 | 1 float       | 2               | 1                    | 1
+CALIBRATE GYROSCOPE           | 207   | none                 | 1 int         | 4               | 5                    | 1
+CALIBRATE MAGNETOMETER        | 208   | none                 | 1 int         | 4               | 5                    | 1
+CALIBRATE SENSOR SYSTEM       | 209   | none                 | 1 int         | 4               | 5                    | 1
+DOWNLINK SENSOR DATA          | 210   | 1 int                | none          | 2               | 2                    | 0
 MOMENTUM WHEEL SPINUP         | 301   | none                 | none          | 1               | 1                    | 0
 MOMENTUM WHEEL SPINDOWN       | 302   | none                 | none          | 1               | 2                    | 0
 QUERY MOMENTUM WHEEL SPEED    | 303   | none                 | 1 float       | 2               | 3                    | 0

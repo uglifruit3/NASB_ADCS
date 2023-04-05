@@ -115,7 +115,44 @@ def test_photor():
 
 def test_CSS():
     while True:
-        for i in D_CSS:
-            print(f"{i.light_level():4.2f} ", end="")
+        for i in CMDS_2.QUERY_SUN_VECTOR():
+            print(f"{i:4.2f} ", end="")
         print("\r", end="")
         sleep(0.05)
+
+def coil_runup(max_volts, time_up, time_down):
+    # compute increment size based on 0.5V steps up to max volts 
+    dc_step = 0.5/max_volts
+    # run forward from 0 to 1
+    dc = dc_step
+    volts = 0.5
+    cutoff = 1
+    while (dc <= cutoff):
+        print(f"Ordered voltage: {volts:4.1f}V, dc {dc:5.3f} - waiting {time_up}s")
+        for i in D_COILS:
+            i.set_duty_cycle(dc)
+        sleep(time_up)
+        for i in D_COILS:
+            i.set_duty_cycle(0)
+        print(f"Ordered voltage:  0.0V - waiting {time_down} s")
+        sleep(time_down)
+        dc += dc_step
+        volts += 0.5
+        if volts > max_volts:
+            cutoff = 0
+            dc = -1
+            volts = -1*max_volts
+#    # run backward from -1 to 0
+#    dc = -1
+#    volts = -1*max_volts
+#    while (dc <= 0):
+#        print(f"Ordered voltage: {volts:4.1f}V, dc {dc:5.3f} - waiting {timeout}s")
+#        for i in D_COILS:
+#            i.set_duty_cycle(dc)
+#        sleep(time_up)
+#        for i in D_COILS:
+#            i.set_duty_cycle(0)
+#        print(f"Ordered voltage:  0.0V - waiting {timeout} s")
+#        sleep(time_down)
+#        dc += dc_step
+#        volts += 0.5

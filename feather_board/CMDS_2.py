@@ -10,20 +10,6 @@ import CMDS_0
 # Command functions        #
 #==========================#
 
-def QUERY_RATE_DATA():
-    try:
-        tmp = list(D_IMU.gyro)
-    except OSError:
-        MASTER_PROCESS.announce_event("IMU", "ERROR", "Bad read on gyroscope register(s).", cmd=201)
-        CMDS_0.IMU_RESET()
-        tmp = QUERY_RATE_DATA()
-    else:
-        tmp = QUERY_RATE_DATA()
-
-    while tmp[0] == None:
-        tmp = QUERY_RATE_DATA()
-    return tmp
-
 def QUERY_MAGNETIC_FIELD_DATA():
     try:
         tmp = list(D_IMU.magnetic)
@@ -39,7 +25,37 @@ def QUERY_MAGNETIC_FIELD_DATA():
         tmp[i] /= 1e6 # conversion from microT to T
 
     return tmp
+
+def QUERY_RATE_DATA():
+    try:
+        tmp = list(D_IMU.gyro)
+    except OSError:
+        MASTER_PROCESS.announce_event("IMU", "ERROR", "Bad read on gyroscope register(s).", cmd=201)
+        CMDS_0.IMU_RESET()
+        tmp = QUERY_RATE_DATA()
+    else:
+        tmp = QUERY_RATE_DATA()
+
+    while tmp[0] == None:
+        tmp = QUERY_RATE_DATA()
+    return tmp
+
+def QUERY_SUN_SENSOR_DATA():
+    l = []
+    for sensor in D_CSS:
+        l.append(sensor.light_level())
+
+    return l
+
+def QUERY_SUN_VECTOR():
+    lvls = QUERY_SUN_SENSOR_DATA()
     
+    dx = lvls[0]-lvls[1]
+    dy = lvls[2]-lvls[3]
+    dz = lvls[4]-lvls[5]
+
+    return [dx, dy, dz]
+
 def QUERY_SYSTEM_TEMPERATURE():
     try:
         tmp = D_IMU.temperature

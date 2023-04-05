@@ -5,7 +5,7 @@ from  gc import mem_free
 from CFG import *
 import MASTER_PROCESS
 
-import BNO055
+from BNO055 import Inertial_Measurement_Unit
 
 def IMU_RESET():
     # needed to re-initialize the IMU after reset
@@ -29,7 +29,7 @@ def IMU_RESET():
     while 0x28 not in MASTER_PROCESS.i2c_scan(P_I2C):
         pass
     # re-initialize imu
-    D_IMU = BNO055.Inertial_Measurement_Unit(P_I2C, rst=board.D4)
+    D_IMU = Inertial_Measurement_Unit(P_I2C, rst=board.D4)
     MASTER_PROCESS.announce_event("IMU", "INFO", "Performed hardware reset.", cmd=002)
 
 def QUERY_FREE_MEMORY():
