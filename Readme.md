@@ -177,19 +177,19 @@ RECORD                        | 109   | 1 int, 2 float, 1 str| none          | 4
 END RECORD                    | 110   | 1 int                | none          | 4               | 5                    | 0
 QUERY MAGNETIC FIELD DATA     | 201   | none                 | 3 float       | 2               | 1                    | 2
 QUERY RATE DATA               | 202   | none                 | 3 float       | 2               | 1                    | 2
-QUERY SUN SENSOR DATA         | 203   | none                 | n float       | 2               | 1                    | 0
-QUERY SUN VECTOR              | 204   | none                 | 3 float       | 2               | 1                    | 0
+QUERY SUN SENSOR DATA         | 203   | none                 | n float       | 2               | 1                    | 2
+QUERY SUN VECTOR              | 204   | none                 | 3 float       | 2               | 1                    | 2
 QUERY ATTITUDE                | 205   | 1 int                | 3 or 4 float  | 2               | 1                    | 0
 QUERY SYSTEM TEMPERATURE      | 206   | none                 | 1 float       | 2               | 1                    | 1
-CALIBRATE GYROSCOPE           | 207   | none                 | 1 int         | 4               | 5                    | 1
-CALIBRATE MAGNETOMETER        | 208   | none                 | 1 int         | 4               | 5                    | 1
-CALIBRATE SENSOR SYSTEM       | 209   | none                 | 1 int         | 4               | 5                    | 1
+CALIBRATE GYROSCOPE           | 207   | none                 | 1 int         | 4               | 5                    | 2
+CALIBRATE MAGNETOMETER        | 208   | none                 | 1 int         | 4               | 5                    | 2
+CALIBRATE SENSOR SYSTEM       | 209   | none                 | 1 int         | 4               | 5                    | 2
 DOWNLINK SENSOR DATA          | 210   | 1 int                | none          | 2               | 2                    | 0
 MOMENTUM WHEEL SPINUP         | 301   | none                 | none          | 1               | 1                    | 0
 MOMENTUM WHEEL SPINDOWN       | 302   | none                 | none          | 1               | 2                    | 0
 QUERY MOMENTUM WHEEL SPEED    | 303   | none                 | 1 float       | 2               | 3                    | 0
-SET MOMENTUP WHEEL SPEED      | 304   | 1 int                | 1 float       | 2               | 1                    | 0
-MAGNETIC DEVICE RESET         | 305   | none                 | none          | 1               | 3                    | 1
+SET MOMENTUP WHEEL SPEED      | 304   | 1 int                | 1 float       | 2               | 1                    | 2
+MAGNETIC DEVICE RESET         | 305   | none                 | none          | 1               | 3                    | 2
 QUERY MAGNETIC DEVICE POWER   | 306   | none                 | 3 float       | 2               | 3                    | 0
 DETUMBLE                      | 401   | 1 or 2 float, 1 int  | none          | 1               | 1                    | 1
 ORIENT TO NADIR               | 402   | 2 or 3 float, 1 int  | none          | 1               | 1                    | 0
@@ -223,7 +223,7 @@ MASTER_PROCESS will be prototyped before any CMDS_*N* libraries can be construct
 
 MASTER PROCESS | PLD_INTERFACE | CMDS_0 | CMDS_1 | CMDS_2 | CMDS_3 | CMDS_4 | CMDS_INDEX
 ---------------|---------------|--------|--------|--------|--------|--------|-------------
-indev          | -             | -      | -      | indev  | -      | -      | -
+indev          | -             | indev  | indev  | indev  | indev  | indev  | -
 
 Supporting hardware driver libraries will be labeled as the device name in all capital letters.
 
