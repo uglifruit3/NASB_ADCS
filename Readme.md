@@ -184,21 +184,26 @@ The ADCS continuously runs a "master process" which is responsible for arbitrati
 High-level task management, communications, scheduling, and system configuration commands will be made available in the following libraries:
 * MASTER_PROCESS - contains the functions and bindings for running the master process.
 * PLD_INTERFACE - contains the functions and bindings for communicating with the NASB payload interface device.
+
 Global variables, to include device and communications protocol objects, state variables, and filenames will be contained in the following library:
 * CFG
+
 The master process will call and manage the user-accessible commands via the following library:
 * CMD_INDEX - contains a custom class for commands and fully indexes them and enables execution by that index.
+
 The user-accessible commands to the ADCS will be implemented in the following libraries, and will be called by CMD_INDEX.
 * CMDS_0 - contains the supporting functions and classes for executing commands with indices 0XX.
 * CMDS_1 - contains the supporting functions and classes for executing commands with indices 1XX.
 * CMDS_2 - contains the supporting functions and classes for executing commands with indices 2XX.
 * CMDS_3 - contains the supporting functions and classes for executing commands with indices 3XX.
 * CMDS_4 - contains the supporting functions and classes for executing commands with indices 4XX.
+
 Device drivers will be contained in the following libraries. The user-accessible command implementation libraries will access these functions and routines.
 * BNO055 - contains supporting functions and classes for interfacing the Adafruit BNO055 IMU.
 * HBRIDGE - contains supporting functions and classes for interfacing the magnetic devices' h-bridge drivers.
 * SUNSENSOR - contains supporting funtions and classes for interfacing the system's coarse sun sensors through analog input.
 * CUBEWHEEL - contains the I2C interface, supporting functions, and classes for interfacing with the CubeSpace CubeWheel.
+
 The following non-executable files will be standard on the system:
 * STARTUP.txt - contains the default state the system will inherit when powered on.
 * LOG.txt - contains the system log.
