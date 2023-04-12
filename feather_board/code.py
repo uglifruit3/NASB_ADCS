@@ -2,8 +2,6 @@ from CFG import *
 # system routine libraries
 import MASTER_PROCESS 
 
-import SUNSENSOR
-
 # command routine libraries
 import CMDS_0
 import CMDS_2

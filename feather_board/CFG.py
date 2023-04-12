@@ -64,12 +64,17 @@ P_I2C = I2C(scl=board.SCL, sda=board.SDA)
 # global system state tracker
 SYS_STATE = system_state()
 
-from BNO055 import Inertial_Measurement_Unit
-from HBRIDGE import init_hbridge_coils
+# pulling device driver initializers
+from BNO055    import Inertial_Measurement_Unit
+from HBRIDGE   import init_hbridge_coils
 from SUNSENSOR import init_sun_sensors
+from CUBEWHEEL import Reaction_Wheel
 # array of 3 h-bridge powered magnetic coils
 D_COILS = init_hbridge_coils(board.D6, board.D9, board.D10, board.D11, board.D12, board.D13)
 # inertial measurement unit
 D_IMU = Inertial_Measurement_Unit(P_I2C, rst=board.D4)
 # coarse sun sensor array
 D_CSS = init_sun_sensors([board.A0, board.A1, board.A2, board.A3, board.A4, board.A5])
+# cubespace cubewheel reaction wheel
+# D_WHEEL = Reaction_Wheel(P_I2C)
+# ^^^ uncomment when ready to test
