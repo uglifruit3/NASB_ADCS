@@ -165,6 +165,7 @@ class Reaction_Wheel():
         self.sec_runtime = int.from_bytes(in_buffer[0:2],byte_order,signed=False)
         self.ctrl_mode   = int.from_bytes(in_buffer[6],  byte_order,signed=False)
 
+        # shifts bit in question to least significant position, then checks if set by and'ing with 00000001
         flags = in_buffer[7]
         self.backup_mode  = True if flags        & 1 == 1 else False
         self.motor_pwr    = True if (flags >> 1) & 1 == 1 else False

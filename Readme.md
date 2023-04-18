@@ -59,7 +59,7 @@ Below is a list of commands that will be issued to the ADCS externally via a UAR
 	* Arguments: log level (a number corresponding to the highest level of log item to be listed).
 	* Returns: a list of system log items.
 * CLEAR SYSTEM LOG: erases the current contents of the system log.
-	* Arguments: save flag (set to auto-save log contents before erasure), the destination file name, log level.
+	* Arguments: none.
 	* Returns: none.
 * SET MAX LOG ENTRIES: sets the maximum number of system log entries before the system log is automatically cleared.
 	* Arguments: max log entries.
@@ -146,7 +146,7 @@ QUERY SYSTEM TIME             | 010   | none                 | 1 string      | 3
 SET SYSTEM TIME               | 011   | 2 int                | 1 int         | 2               | 1                    | 0
 QUERY UPTIME                  | 012   | none                 | 1 int         | 3               | 5                    | 0
 QUERY SYSTEM LOG              | 100   | 1 int                | 1 string      | 4               | 2                    | 0
-CLEAR SYSTEM LOG              | 101   | 1 string, 2 int      | none          | 3               | 2                    | 0
+CLEAR SYSTEM LOG              | 101   | none                 | none          | 3               | 2                    | 0
 SET MAX LOG ENTRIES           | 102   | 1 int                | none          | 4               | 2                    | 0
 QUERY MAGNETIC FIELD DATA     | 200   | none                 | 3 float       | 2               | 1                    | 2
 QUERY RATE DATA               | 201   | none                 | 3 float       | 2               | 1                    | 2

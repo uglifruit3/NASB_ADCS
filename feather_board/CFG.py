@@ -59,10 +59,12 @@ class system_state():
         # tracks whether the system is running asynchronous commands
         self.async_mode = False
 
-# I2C protocol object
-P_I2C = I2C(scl=board.SCL, sda=board.SDA)
+
 # global system state tracker
 SYS_STATE = system_state()
+
+# I2C protocol object
+P_I2C = I2C(scl=board.SCL, sda=board.SDA)
 
 # pulling device driver initializers
 from BNO055    import Inertial_Measurement_Unit

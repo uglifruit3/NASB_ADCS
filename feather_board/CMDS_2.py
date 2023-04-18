@@ -10,7 +10,7 @@ import CMDS_0
 # Command functions        #
 #==========================#
 
-def QUERY_MAGNETIC_FIELD_DATA():
+def _200_QUERY_MAGNETIC_FIELD_DATA():
     try:
         tmp = list(D_IMU.magnetic)
     except OSError:
@@ -26,7 +26,7 @@ def QUERY_MAGNETIC_FIELD_DATA():
 
     return tmp
 
-def QUERY_RATE_DATA():
+def _201_QUERY_RATE_DATA():
     try:
         tmp = list(D_IMU.gyro)
     except OSError:
@@ -40,14 +40,14 @@ def QUERY_RATE_DATA():
         tmp = QUERY_RATE_DATA()
     return tmp
 
-def QUERY_SUN_SENSOR_DATA():
+def _202_QUERY_SUN_SENSOR_DATA():
     l = []
     for sensor in D_CSS:
         l.append(sensor.light_level())
 
     return l
 
-def QUERY_SUN_VECTOR():
+def _203_QUERY_SUN_VECTOR():
     lvls = QUERY_SUN_SENSOR_DATA()
     
     dx = lvls[0]-lvls[1]
@@ -56,7 +56,10 @@ def QUERY_SUN_VECTOR():
 
     return [dx, dy, dz]
 
-def QUERY_SYSTEM_TEMPERATURE():
+def _204_QUERY_ATTITUDE():
+    pass
+
+def _205_QUERY_SYSTEM_TEMPERATURE():
     try:
         tmp = D_IMU.temperature
     except OSError:
@@ -65,3 +68,15 @@ def QUERY_SYSTEM_TEMPERATURE():
         tmp = D_IMU.temperature
     else:
         return tmp
+
+def _206_CALIBRATE_GYROSCOPE():
+    pass
+
+def _207_CALIBRATE_MAGNETOMETER():
+    pass
+
+def _208_CALIBRATE_SENSOR_SYSTEM():
+    pass
+
+def _209_DOWNLINK_SENSOR_DATA():
+    pass

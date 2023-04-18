@@ -69,3 +69,12 @@ def bdot_controller(B_dot):
 
 # TODO will need to implement asycronous processing with asyncio to handle tasks going forward
 # Bdot controller above could need to be written in a manner sensitive to this requirement
+
+def _400_DETUMBLE():
+    pass
+
+def _401_ORIENT_TO_NADIR():
+    pass
+
+def _402_TERMINATE_ATTITUDE_COMMAND():
+    pass

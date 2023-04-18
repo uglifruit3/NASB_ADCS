@@ -7,7 +7,10 @@ import MASTER_PROCESS
 
 from BNO055 import Inertial_Measurement_Unit
 
-def IMU_RESET():
+def _000_SYSTEM_RESET():
+    pass
+
+def _001_IMU_RESET():
     # needed to re-initialize the IMU after reset
     global D_IMU
     # in event that reset not configured for in hardware
@@ -32,7 +35,37 @@ def IMU_RESET():
     D_IMU = Inertial_Measurement_Unit(P_I2C, rst=board.D4)
     MASTER_PROCESS.announce_event("IMU", "INFO", "Performed hardware reset.", cmd=002)
 
-def QUERY_FREE_MEMORY():
+def _002_SET_IMU_POWER():
+    pass
+
+def _003_QUERY_SOH():
+    pass
+
+def _004_SET_SH_MODE():
+    pass
+
+def _005_QUERY_MODE():
+    pass
+
+def _006_QUERY_FREE_MEMORY():
     mem = mem_free()
     MASTER_PROCESS.announce_event("SYS", "INFO", f"{mem} bytes free.", cmd=009)
     return mem
+
+def _007_QUERY_FREE_FILESYSTEM_STORAGE():
+    pass
+
+def _008_QUERY_TLE():
+    pass
+
+def _009_SET_TLE():
+    pass
+
+def _010_QUERY_SYSTEM_TIME():
+    pass
+
+def _011_SET_SYSTEM_TIME():
+    pass
+
+def _012_QUERY_UPTIME():
+    pass
