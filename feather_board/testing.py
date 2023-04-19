@@ -16,7 +16,7 @@ import CMDS_4
 
 def test_detumble():
     cnt = 0
-    B = CMDS_2.QUERY_MAGNETIC_FIELD_DATA()
+    B = CMDS_2._200_QUERY_MAGNETIC_FIELD_DATA()
     B_dot = [0, 0, 0]
     quit = False
     while quit is False:
@@ -48,9 +48,9 @@ def test_detumble():
 def get_bdot_realtime():
     while True:
         t_i = monotonic()
-        B_old = CMDS_2.QUERY_MAGNETIC_FIELD_DATA()
+        B_old = CMDS_2._200_QUERY_MAGNETIC_FIELD_DATA()
         sleep(0.05)
-        B = CMDS_2.QUERY_MAGNETIC_FIELD_DATA()
+        B = CMDS_2._200_QUERY_MAGNETIC_FIELD_DATA()
         dt = monotonic() - t_i
 
         B_dot = [ (B[0] - B_old[0])/(dt*1e6),
@@ -63,7 +63,7 @@ def get_bdot_realtime():
 
 def test_mag_data():
     t_start = monotonic()
-    B = CMDS_2.QUERY_MAGNETIC_FIELD_DATA()
+    B = CMDS_2._200_QUERY_MAGNETIC_FIELD_DATA()
     B_dot = [0, 0, 0]
     quit = False
     while quit is False:
@@ -93,8 +93,8 @@ def fade_hbridge():
 
 def mag_timer():
     t_0 = monotonic()
-    B_0 = CMDS_2.QUERY_MAGNETIC_FIELD_DATA()
-    B_1 = CMDS_2.QUERY_MAGNETIC_FIELD_DATA()
+    B_0 = CMDS_2._200_QUERY_MAGNETIC_FIELD_DATA()
+    B_1 = CMDS_2._200_QUERY_MAGNETIC_FIELD_DATA()
     t_1 = monotonic()
     dt = t_1 - t_0
 
@@ -115,7 +115,7 @@ def test_photor():
 
 def test_CSS():
     while True:
-        for i in CMDS_2.QUERY_SUN_VECTOR():
+        for i in CMDS_2._203_QUERY_SUN_VECTOR():
             print(f"{i:4.2f} ", end="")
         print("\r", end="")
         sleep(0.05)

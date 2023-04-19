@@ -15,7 +15,7 @@ def _200_QUERY_MAGNETIC_FIELD_DATA():
         tmp = list(D_IMU.magnetic)
     except OSError:
         MASTER_PROCESS.announce_event("IMU", "ERROR", "Bad read on magnetometer register(s).", cmd=202)
-        CMDS_0.IMU_RESET()
+        CMDS_0._001_IMU_RESET()
         tmp = list(D_IMU.magnetic)
 
     while tmp[0] == None:
@@ -32,12 +32,10 @@ def _201_QUERY_RATE_DATA():
     except OSError:
         MASTER_PROCESS.announce_event("IMU", "ERROR", "Bad read on gyroscope register(s).", cmd=201)
         CMDS_0.IMU_RESET()
-        tmp = QUERY_RATE_DATA()
-    else:
-        tmp = QUERY_RATE_DATA()
+        tmp = list(D_IMU.gyro)
 
     while tmp[0] == None:
-        tmp = QUERY_RATE_DATA()
+        tmp = list(D_IMU.gyro)
     return tmp
 
 def _202_QUERY_SUN_SENSOR_DATA():
@@ -64,7 +62,7 @@ def _205_QUERY_SYSTEM_TEMPERATURE():
         tmp = D_IMU.temperature
     except OSError:
         MASTER_PROCESS.announce_event("IMU", "ERROR", "Bad read on temperature register.", cmd=205)
-        CMDS_0.IMU_RESET()
+        CMDS_0._001_IMU_RESET()
         tmp = D_IMU.temperature
     else:
         return tmp

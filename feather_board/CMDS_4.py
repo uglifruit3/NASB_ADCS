@@ -23,7 +23,7 @@ def get_bdot(time_up, B_old, B_dot_old):
     B_0 = [B_old[0], B_old[1], B_old[2]]
     while monotonic()-t_start < (time_up-0.01):
         # get new sample and dt
-        B_1 = CMDS_2.QUERY_MAGNETIC_FIELD_DATA()
+        B_1 = CMDS_2._200_QUERY_MAGNETIC_FIELD_DATA()
         t_1 = monotonic()
         dt = t_1 - t_0
 
