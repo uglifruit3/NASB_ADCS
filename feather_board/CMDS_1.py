@@ -1,6 +1,6 @@
 # This is the system routine library for all 1XX series commands
 
-from CFG import *
+from CONFIG import *
 import MASTER_PROCESS
 
 def _100_QUERY_SYSTEM_LOG():

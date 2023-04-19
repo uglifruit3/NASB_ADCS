@@ -1,4 +1,4 @@
-from CFG import *
+from CONFIG import *
 # system routine libraries
 import MASTER_PROCESS 
 

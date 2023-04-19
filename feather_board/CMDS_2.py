@@ -1,7 +1,7 @@
 # This is the system routine library for all 2XX series commands
 from time import sleep
 
-from CFG import *
+from CONFIG import *
 import MASTER_PROCESS
 
 import CMDS_0

@@ -3,7 +3,7 @@
 from time import monotonic, sleep
 from math import sqrt, isnan
 
-from CFG import *
+from CONFIG import *
 import MASTER_PROCESS
 
 import CMDS_2

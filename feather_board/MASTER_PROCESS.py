@@ -4,7 +4,7 @@ from time import monotonic
 import board
 from busio import I2C
 
-from CFG import *
+from CONFIG import *
 
 #==========================#
 # Custom functions         #

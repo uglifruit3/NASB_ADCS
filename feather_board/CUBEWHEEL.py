@@ -5,7 +5,7 @@ from time import sleep
 from digitalio import DigitalInOut, Direction, Pull
 from busio import I2C
 
-from CFG import *
+from CONFIG import *
 # system routine libraries
 import MASTER_PROCESS
 

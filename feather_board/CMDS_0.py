@@ -2,7 +2,7 @@ from digitalio import DigitalInOut, Direction
 from time import sleep
 from  gc import mem_free
 
-from CFG import *
+from CONFIG import *
 import MASTER_PROCESS
 
 from BNO055 import Inertial_Measurement_Unit

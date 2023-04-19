@@ -1,4 +1,4 @@
-# CFG contains all global variables and defines the system state class
+# CONFIG contains all global variables and defines the system state class
 # Naming conventions are as follows:
 #   - Protocols are prepended with a P_
 #   - Devices are prepended with a D_

@@ -5,7 +5,7 @@ from time import monotonic, sleep
 from analogio import AnalogIn
 import board
 
-from CFG import *
+from CONFIG import *
 # system routine libraries
 import MASTER_PROCESS
 

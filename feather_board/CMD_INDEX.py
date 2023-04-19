@@ -1,5 +1,5 @@
 # this is the interface for running commands when received by the PIB
-from CFG import *
+from CONFIG import *
 # system routine libraries
 import MASTER_PROCESS 
 

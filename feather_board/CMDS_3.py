@@ -1,6 +1,6 @@
 # This is the system routine library for all 3XX series commands
 
-from CFG import *
+from CONFIG import *
 import MASTER_PROCESS
 
 def _300_MOMENTUM_WHEEL_SPINUP():
