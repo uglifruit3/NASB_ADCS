@@ -59,13 +59,15 @@ def bdot_controller(B_dot):
         m[1] = -1*KBdot*B_dot[1]
         m[2] = -1*KBdot*B_dot[2]
 
-    # limit commanded dipole moment
+    # limit commanded dipole moment and compute required voltage for each coil
+    dc = [0, 0, 0]
     for i in range(0,3):
         if abs(m[i]) > msat:
             m[i] = (m[i]/abs(m[i])) * msat
-    # compute and return voltage required for magnetorquers
-    v = (m*18.9*4) / (300*3.1415*0.02*0.02)
-    return v/7.2
+        v = (m[i]*18.9*4) / (300*3.1415*0.02*0.02)
+        dc[i] = v/7.2
+
+    return dc
 
 # TODO will need to implement asycronous processing with asyncio to handle tasks going forward
 # Bdot controller above could need to be written in a manner sensitive to this requirement

@@ -34,14 +34,13 @@ def test_detumble():
             B = data[0]
             B_dot = data[1]
             print(f"[{cnt}] B: {data[0]} || B_dot: {data[1]}, mag: {sqrt(sum(pow(i,2) for i in data[1]))}")
-            m = CMDS_4.bdot_controller(data[1])
-            print(f"[{cnt}] Ordered m = {m} in {monotonic()-t_start}s\n")
+            duty_cycles = CMDS_4.bdot_controller(data[1])
+            print(f"[{cnt}] Ordered dc = {duty_cycles} in {monotonic()-t_start}s\n")
             while monotonic()-t_i < 1.0:
                 pass
 
             for i in range(0,3):
-                dc = CMDS_4.m_to_dutycycle(m[i])
-                D_COILS[i].set_duty_cycle(dc)
+                D_COILS[i].set_duty_cycle(duty_cycles[i])
         except KeyboardInterrupt:
             quit = True
 

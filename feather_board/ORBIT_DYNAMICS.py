@@ -1,4 +1,5 @@
 import math
+from time import 
 
 ### TLE setup
 ## Line 1
@@ -21,7 +22,8 @@ import math
 ## Convert day of the year to month and day (example: dayofyear = 276.34543)
 def day_to_monthday(year, dayofyear):
     daynums = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365]
-    if year == 2020 or year ==  2024 or year ==  2028 or year == 2032 or year == 2036 or year == 2040 or year == 2044 or year == 2048: # if it's a leap year, take it into account!
+    # if it's a leap year, take it into account!
+    if year % 4 == 0:
         for i in range(len(daynums) - 2):
             daynums[i + 2] += 1
     if dayofyear >= daynums[0] and dayofyear <= daynums[1]:
@@ -291,36 +293,33 @@ def SunVectorECI(JD):
 
     shat_eci = [shat_eci[0]/(mag(shat_eci)), shat_eci[1]/(mag(shat_eci)), shat_eci[2]/(mag(shat_eci))] # normalize again
 
-
     return shat_eci
 
-################# EXECUTABLE CODE
-
-# Initial epoch and ephemeris, taken from TLE
-
-#ephem format: mean motion (deg/s), eccentricity, inclination (deg), RAAN(deg), argument of perigee (deg), mean anomaly (deg)
-#epoch format: day, month, year, hour, minute, second (ss.sss)
-line1 = '1 25544U 98067A   08264.51782528 -.00002182  00000-0 -11606-4 0  2927'
-line2 = '2 25544  51.6416 247.4627 0006703 130.5360 325.0288 15.72125391563537'
-epoch, ephem = read_TLE(line1, line2)
-
-# time passed since epoch, [seconds]
-t = 3405
-
-# track 1 - RECI and VECI
-ephem_nu = orbit_propagator_2body(ephem, t)
-reci, veci = rv_eci(ephem_nu)
-
-# track 2 - Sun Vector
-jd = JD_GMST(epoch, t)
-shat_ECI = SunVectorECI(jd)
-
-
-# Print statements to check operation
-print(orbit_propagator_2body(ephem, t))
-print(jd)
-print(reci)
-print(veci)
-print(shat_ECI)
-
-
+# ################# Use case example
+# 
+# # Initial epoch and ephemeris, taken from TLE
+# 
+# #ephem format: mean motion (deg/s), eccentricity, inclination (deg), RAAN(deg), argument of perigee (deg), mean anomaly (deg)
+# #epoch format: day, month, year, hour, minute, second (ss.sss)
+# line1 = '1 25544U 98067A   08264.51782528 -.00002182  00000-0 -11606-4 0  2927'
+# line2 = '2 25544  51.6416 247.4627 0006703 130.5360 325.0288 15.72125391563537'
+# epoch, ephem = read_TLE(line1, line2)
+# 
+# # time passed since epoch, [seconds]
+# t = 3405
+# 
+# # track 1 - RECI and VECI
+# ephem_nu = orbit_propagator_2body(ephem, t)
+# reci, veci = rv_eci(ephem_nu)
+# 
+# # track 2 - Sun Vector
+# jd = JD_GMST(epoch, t)
+# shat_ECI = SunVectorECI(jd)
+# 
+# 
+# # Print statements to check operation
+# print(orbit_propagator_2body(ephem, t))
+# print(jd)
+# print(reci)
+# print(veci)
+# print(shat_ECI)

@@ -12,7 +12,7 @@ import testing
 
 def main():
     MASTER_PROCESS.startup_delay()
-    CMDS_0.QUERY_FREE_MEMORY()
+    CMDS_0._006_QUERY_FREE_MEMORY()
 
 # =================== #
 #       MAIN          #
@@ -30,4 +30,4 @@ main()
 #     sum_t += t
 #     avg = sum_t/cnt
 #     print(f"\rTime between reads: {t:10.8f} {avg:10.8f} {hi:10.8f}", end="")
-testing.coil_runup(10, 1, 1) 
+testing.test_detumble()

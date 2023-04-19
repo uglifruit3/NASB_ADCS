@@ -49,7 +49,7 @@ def _005_QUERY_MODE():
 
 def _006_QUERY_FREE_MEMORY():
     mem = mem_free()
-    MASTER_PROCESS.announce_event("SYS", "INFO", f"{mem} bytes free.", cmd=009)
+    MASTER_PROCESS.announce_event("SYS", "INFO", f"{mem} bytes free.", cmd=006)
     return mem
 
 def _007_QUERY_FREE_FILESYSTEM_STORAGE():
