@@ -11,6 +11,8 @@ import board
 F_IMU_CALIBRATION_PROFILE = "/00_cal_profile.txt" 
 # system state file
 F_SYSSTATE = "STARTUP.txt"
+# orbit two line element file
+F_TLE = "tle.txt"
 
 class system_state():
     # tracks system settings
@@ -58,7 +60,6 @@ class system_state():
         self.command = 0
         # tracks whether the system is running asynchronous commands
         self.async_mode = False
-
 
 # global system state tracker
 SYS_STATE = system_state()

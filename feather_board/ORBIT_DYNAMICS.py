@@ -18,6 +18,10 @@ from time import
 # 8 Mean motion (revolutions/day)
 # 9 Revolution # at epoch (revolutions)
 
+## MILES TODO
+#   - Read TLE from file and implement into read_TLE
+#   - Devise a manner of computing time since tle epoch concisely/nonintensively
+#   - May need to rethink using time.monotonic()
 
 ## Convert day of the year to month and day (example: dayofyear = 276.34543)
 def day_to_monthday(year, dayofyear):

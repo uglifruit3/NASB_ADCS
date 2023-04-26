@@ -110,6 +110,9 @@ Below is a list of commands that will be issued to the ADCS externally via a UAR
 * QUERY MOMENTUM WHEEL SPEED: queries the CubeADCS momentum wheel's rotational speed.
 	* Arguments: none.
 	* Returns: the momentum wheel's rotational speed in RPMs.
+* QUERY MOMENTUM WHEEL TELEMETRY: queries the CubeADCS momentum wheel's telemetry info.
+	* Arguments: none.
+	* Returns: binary representation of wheel telemetry.
 * MAGNETIC DEVICE RESET: resets the magnetic rods/coil to a low power state.
 	* Arguments: none.
 	* Returns: none.
@@ -161,6 +164,7 @@ DOWNLINK SENSOR DATA          | 209   | 1 int                | none          | 2
 MOMENTUM WHEEL SPINUP         | 300   | none                 | none          | 1               | 1                    | 0
 MOMENTUM WHEEL SPINDOWN       | 301   | none                 | none          | 1               | 2                    | 0
 QUERY MOMENTUM WHEEL SPEED    | 302   | none                 | 1 float       | 2               | 3                    | 0
+QUERY MOMENTUM WHEEL TELEMETRY| 303   | none                 | 1 bin         | 2               | 3                    | 0
 MAGNETIC DEVICE RESET         | 304   | none                 | none          | 1               | 3                    | 2
 QUERY MAGNETIC DEVICE POWER   | 305   | none                 | 3 float       | 2               | 3                    | 0
 DETUMBLE                      | 400   | 1 or 2 float, 1 int  | none          | 1               | 1                    | 1

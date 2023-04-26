@@ -155,3 +155,12 @@ def coil_runup(max_volts, time_up, time_down):
 #        sleep(time_down)
 #        dc += dc_step
 #        volts += 0.5
+
+def monotonic_timetest():
+    input("Press enter to begin timing")
+    t_0 = monotonic()
+    while True:
+        try:
+            print(f"{monotonic()-t_0:10.5f}\r", end="")
+        except:
+            break
