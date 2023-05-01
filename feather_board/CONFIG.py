@@ -79,5 +79,5 @@ D_IMU = Inertial_Measurement_Unit(P_I2C, rst=board.D4)
 # coarse sun sensor array
 D_CSS = init_sun_sensors([board.A0, board.A1, board.A2, board.A3, board.A4, board.A5])
 # cubespace cubewheel reaction wheel
-# D_WHEEL = Reaction_Wheel(P_I2C)
-# ^^^ uncomment when ready to test
+D_WHEEL = Reaction_Wheel(P_I2C)
+# # ^^^ uncomment when ready to test

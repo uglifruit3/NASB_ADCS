@@ -14,7 +14,7 @@ import MASTER_PROCESS
 #==========================#
 
 # I2C addresses and device info
-write_addr = 0xD0
+write_addr = 107
 read_addr  = write_addr+1
 byte_order = 'little'
 # To be used in sending command IDs over I2C
@@ -52,7 +52,7 @@ class Reaction_Wheel():
         else:
             self.i2c = i2c_in
         addrs = MASTER_PROCESS.i2c_scan(self.i2c)
-        if write_addr not in addrs or read_addr not in addrs:
+        if write_addr not in addrs:
             raise ValueError(f"CubeWheel not found at addresses {hex(write_addr)} (write) and {hex(read_addr)} (read)")
 
         # initialize error field
@@ -65,29 +65,32 @@ class Reaction_Wheel():
                 [7, "speed",       False],
                 [8, "wheel",       False]
                 ]
-        self.get_errors()
+        self.get_status_errors()
         # initialize wheel speeds
         self.wheel_speed  = 0
         self.wheel_refspd = 0
-        self.get_wheel_speed()
-        self.get_wheel_refspd()
-        # initialize wheel status data
-        # these variables available through wheel status telemetry
-        self.sec_runtime = 0
-        self.ctrl_mode   = ctrl_modes["idle"]
-        self.backup_mode = False
-        self.motor_pwr   = False
-        self.hall_pwr    = False
-        self.enc_pwr     = False
-        self.get_wheel_status()
+        # self.get_wheel_speed()
+        # self.get_wheel_refspd()
+        # # initialize wheel status data
+        # # these variables available through wheel status telemetry
+        # self.sec_runtime = 0
+        # self.ctrl_mode   = ctrl_modes["idle"]
+        # self.backup_mode = False
+        # self.motor_pwr   = False
+        # self.hall_pwr    = False
+        # self.enc_pwr     = False
+        # self.get_wheel_status()
 
     #==============#
     # telecommands # 
     #==============#
     def reset(self):
         # the argument to this command must be set to 85
+        while self.i2c.try_lock() is False:
+            pass
         self.i2c.writeto(write_addr, 
-                commands["reset"]+(85).to_bytes(1,byte_order,signed=False))
+                bytes(commands["reset"],(85).to_bytes(1,byte_order,signed=False)))
+        self.i2c.unlock()
         # await wheel to come back online
         while write_addr not in MASTER_PROCESS.i2c_scan(self.i2c):
             pass
@@ -149,24 +152,32 @@ class Reaction_Wheel():
         return
 
     def clr_errors(self):
+        while self.i2c.try_lock() is False:
+            pass
         self.i2c.writeto(write_addr, 
-                commands["clr_errors"]+(85).to_bytes(1,byte_order,signed=False))
+                #bytes(commands["clr_errors"]+(85).to_bytes(1,byte_order,signed=False)))
+                b'\x55'+commands["clr_errors"])
+        self.i2c.unlock()
         return
 
     #==============#
     # telemetry    # 
     #==============#
     def get_wheel_status(self):
-        in_buffer = bytes(8)
+        in_buffer = bytearray(8)
+
+        while self.i2c.try_lock() is False:
+            pass
         self.i2c.writeto_then_readfrom(write_addr,
                 commands["get_wheel_status"],
                 in_buffer)
-        
-        self.sec_runtime = int.from_bytes(in_buffer[0:2],byte_order,signed=False)
-        self.ctrl_mode   = int.from_bytes(in_buffer[6],  byte_order,signed=False)
+        self.i2c.unlock()
+
+        self.sec_runtime = int.from_bytes(bytes(in_buffer[0:2]),byte_order,signed=False)
+        self.ctrl_mode   = int.from_bytes(bytes(in_buffer[6]),  byte_order,signed=False)
 
         # shifts bit in question to least significant position, then checks if set by and'ing with 00000001
-        flags = in_buffer[7]
+        flags = int.from_bytes(bytes(in_buffer[7]),byte_order,signed=False)
         self.backup_mode  = True if flags        & 1 == 1 else False
         self.motor_pwr    = True if (flags >> 1) & 1 == 1 else False
         self.hall_pwr     = True if (flags >> 2) & 1 == 1 else False
@@ -176,26 +187,42 @@ class Reaction_Wheel():
         return
 
     def get_wheel_speed(self):
-        in_buffer = bytes(2)
+        in_buffer = bytearray(2)
+
+        while self.i2c.try_lock() is False:
+            pass
         self.i2c.writeto_then_readfrom(write_addr,
                 commands["get_wheel_speed"],
                 in_buffer)
+        self.i2c.unlock()
+
         self.wheel_speed =  int.from_bytes(in_buffer,byte_order,signed=True)/2
         return self.wheel_speed
 
     def get_wheel_refspeed(self):
-        in_buffer = bytes(2)
+        in_buffer = bytearray(2)
+
+        while self.i2c.try_lock() is False:
+            pass
         self.i2c.writeto_then_readfrom(write_addr,
                 commands["get_wheel_refspd"],
                 in_buffer)
+        self.i2c.unlock()
+
+        # signed int conversion isn't implemented ???? Fuck
         self.wheel_refspd = int.from_bytes(in_buffer,byte_order,signed=True)/2
         return self.wheel_refspd
 
     def get_wheel_current(self):
-        in_buffer = bytes(2)
+        in_buffer = bytearray(2)
+
+        while self.i2c.try_lock() is False:
+            pass
         self.i2c.writeto_then_readfrom(write_addr,
                 commands["get_wheel_current"],
                 in_buffer)
+        self.i2c.unlock()
+
         return int.from_bytes(in_buffer,byte_order,signed=False)*0.48828125
 
     def get_wheel_data(self):
@@ -203,14 +230,17 @@ class Reaction_Wheel():
 
     def get_status_errors(self):
         # read output into in_buffer
-        in_buffer = bytes(1)
+        in_buffer = bytearray(1)
+        while self.i2c.try_lock() is False:
+            pass
         self.i2c.writeto_then_readfrom(write_addr, 
                 commands["get_status_errors"],
                 in_buffer)
+        self.i2c.unlock()
         # check against bitmask to obtain error flags
         errs = int.from_bytes(in_buffer,byte_order,signed=False)
         for i in range(0,6):
-            if (in_buffer >> self.errors[i][0]) & 1 == 1:
+            if (errs >> self.errors[i][0]) & 1 == 1:
                 self.errors[i][2] = True
             else:
                 self.errors[i][2] = False
