@@ -15,8 +15,20 @@ class H_Bridge_Coil():
         self.forward  = PWMOut(f_pin, frequency=5000, duty_cycle=0)
         self.backward = PWMOut(b_pin, frequency=5000, duty_cycle=0)
 
-    # accepts a number between 0 and 1, self.state should be set to specify direction
+    def set_state(self, new_state):
+        if abs(new_state) == 1:
+            self.state = new_state
+        else:
+            self.state = 0
+
+    # accepts a number between -1 and 1, sign specifies direction according to state conventions listed above
     def set_duty_cycle(self, dc):
+        if dc != 0:
+            self.set_state(round(dc/abs(dc)))
+        else:
+            self.set_state(0)
+
+        dc = abs(dc)
         # 65535 is 2**15, duty_cycle requires a fraction of 16-bit max int
         # abs(self.state) and (-1|+1 + self.state)/2 sets power in either direction
         self.backward.duty_cycle = abs(self.state*int((-1+self.state)*dc*65535 / 2))

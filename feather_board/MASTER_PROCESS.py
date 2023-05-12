@@ -4,7 +4,7 @@ from time import monotonic
 import board
 from busio import I2C
 
-from CFG import *
+from CONFIG import *
 
 #==========================#
 # Custom functions         #
@@ -38,7 +38,7 @@ def startup_delay():
     delay = SYS_STATE.startup_delay
     if delay == 0:
         return
-    announce_event("SYS", "INFO", f"Delaying startup by {delay} seconds.", cmd=0)
+    announce_event("SYS", "INFO", f"Delaying startup by {delay} seconds.", cmd=-1)
 
     t_i = monotonic()
     t_c = t_i

@@ -7,7 +7,7 @@ import adafruit_bno055
 from sys import exit
 from digitalio import DigitalInOut, Direction, Pull
 
-from CFG import *
+from CONFIG import *
 # system routine libraries
 import MASTER_PROCESS
 
